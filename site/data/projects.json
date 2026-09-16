@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "ethereum-fraud-detection",
+    "title": "Ethereum Fraud Detection",
+    "year": "2026",
+    "kind": "Coursework · Machine learning",
+    "summary": "Binary classification of Ethereum addresses as fraudulent or legitimate on 9,841 addresses with 50 transaction-derived features. LightGBM reaches F1 0.987 on held-out data, but the interesting part is what it took to trust that number: a group-aware split that removes the 5.7% of test rows a naive split would have leaked.",
+    "stack": ["Python", "scikit-learn", "LightGBM", "XGBoost", "pandas", "pytest"],
+    "metrics": [
+      { "value": "0.987", "label": "F1, held-out" },
+      { "value": "0.999", "label": "PR-AUC" },
+      { "value": "9,841", "label": "addresses" }
+    ],
+    "repo": "https://github.com/draurug/ethereum-fraud-detection",
+    "demo": null,
+    "featured": true
+  },
+  {
+    "slug": "crossw",
+    "title": "CrossW",
+    "year": "2026",
+    "kind": "Product · Full-stack TypeScript",
+    "summary": "A crossword site where the theme lives in the clue rather than the word. ТРАМВАЙ is an ordinary word; \"the transport that beheaded Berlioz\" makes it belong to The Master and Margarita. Four themed packs, eight levels each, no word repeated across levels. Answers never reach the browser in readable form.",
+    "stack": ["Next.js 15", "React 19", "TypeScript", "Tailwind", "Vitest", "Cloudflare Workers"],
+    "metrics": [
+      { "value": "75", "label": "unit tests" },
+      { "value": "5.4k", "label": "lines of TS" },
+      { "value": "4", "label": "themed packs" }
+    ],
+    "repo": "https://github.com/draurug/CrossW",
+    "demo": "https://crossw.draugur3-14.workers.dev",
+    "featured": true
+  },
+  {
+    "slug": "voronoi-path-planner",
+    "title": "Voronoi Path Planner",
+    "year": "2026",
+    "kind": "Coursework · Computational geometry",
+    "summary": "An interactive robot path planner that does not just find a route but finds the safest one. It builds a clearance field against the obstacles, binary-searches the largest clearance threshold for which start and goal are still connected, then runs Dijkstra inside that corridor.",
+    "stack": ["C++", "FreeGLUT", "Python", "NumPy", "SciPy", "matplotlib"],
+    "metrics": [
+      { "value": "960×720", "label": "grid" },
+      { "value": "8", "label": "connectivity" },
+      { "value": "20", "label": "generated figures" }
+    ],
+    "repo": "https://github.com/draurug/voronoi-path-planner",
+    "demo": null,
+    "featured": true
+  },
+  {
+    "slug": "opengl-geometry-labs",
+    "title": "Computational Geometry in OpenGL",
+    "year": "2026",
+    "kind": "Coursework · Graphics",
+    "summary": "Five OpenGL programs working up from a shaded triangle to real geometry: Bresenham against Xiaolin Wu line rasterization side by side, segment intersection by orientation test, Graham scan convex hull, and ear-clipping polygon triangulation.",
+    "stack": ["C++", "OpenGL", "GLEW", "FreeGLUT"],
+    "metrics": [
+      { "value": "5", "label": "programs" },
+      { "value": "~1k", "label": "lines of C++" }
+    ],
+    "repo": "https://github.com/draurug/opengl-geometry-labs",
+    "demo": null,
+    "featured": false
+  },
+  {
+    "slug": "numerical-methods",
+    "title": "Numerical Methods",
+    "year": "2026",
+    "kind": "Coursework · Computational mathematics",
+    "summary": "Eight self-contained labs in Octave, each with its own write-up and generated figures: interpolation on uniform against Chebyshev nodes (where the Runge phenomenon shows up plainly), splines, least squares, Simpson integration with Runge error control, Runge-Kutta with adaptive stepping, and an Adams predictor-corrector checked against ode45.",
+    "stack": ["Octave", "MATLAB", "LaTeX"],
+    "metrics": [
+      { "value": "8", "label": "labs" },
+      { "value": "22", "label": "figures" }
+    ],
+    "repo": "https://github.com/draurug/numerical-methods-octave",
+    "demo": null,
+    "featured": false
+  },
+  {
+    "slug": "blockchain-papers",
+    "title": "Blockchain Papers",
+    "year": "2026",
+    "kind": "Academic writing",
+    "summary": "Two papers written for a blockchain technology course: one on where blockchain and machine learning actually meet rather than where the marketing says they do, and one on bin packing as an NP-complete problem, with the approximation algorithms that make it tractable in practice.",
+    "stack": ["LaTeX", "Beamer"],
+    "metrics": [
+      { "value": "2", "label": "papers" },
+      { "value": "1", "label": "conference talk" }
+    ],
+    "repo": "https://github.com/draurug/blockchain-papers",
+    "demo": null,
+    "featured": false
+  },
+  {
+    "slug": "tictactoe",
+    "title": "Networked Tic-Tac-Toe",
+    "year": "2026",
+    "kind": "Desktop · Systems",
+    "summary": "A desktop tic-tac-toe played over TCP. The game itself is trivial; the work is everything around it — a packet protocol on Boost.Asio, a player list, an invitation handshake with accept and decline, and turn synchronisation between two clients.",
+    "stack": ["C++20", "Qt", "Boost.Asio", "CMake"],
+    "metrics": [
+      { "value": "~1.2k", "label": "lines of C++" }
+    ],
+    "repo": "https://github.com/draurug/TicTacToe",
+    "demo": null,
+    "featured": false
+  },
+  {
+    "slug": "battleship",
+    "title": "Battleship",
+    "year": "2026",
+    "kind": "Desktop · C++",
+    "summary": "Battleship on Qt with the domain kept strictly out of the UI: Board, Ship and Game know nothing about widgets, and BoardWidget does the painting. Builds against Qt6 and falls back to Qt5 when Qt6 is not there.",
+    "stack": ["C++17", "Qt6", "Qt5", "CMake"],
+    "metrics": [
+      { "value": "~1k", "label": "lines of C++" }
+    ],
+    "repo": "https://github.com/draurug/qt-battleship",
+    "demo": null,
+    "featured": false
+  }
+]

@@ -1,0 +1,17 @@
+# build artefacts
+build/
+*.o
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.synctex.gz
+__pycache__/
+.venv/
+.ipynb_checkpoints/
+node_modules/
+
+# working copies of source projects — published as their own repos
+work/
