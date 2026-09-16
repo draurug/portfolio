@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylesheet preview — Uliana Hrab</title>
+<meta name="description" content="Every element and class in the markup contract, on one page.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../../index.html" aria-current="page">Work</a>
+    <a href="../../cv.html">CV</a>
+  </nav>
+</header>
+
+<!-- ===== 1. Index page: hero + work list ===================== -->
+<main class="page page--index">
+  <section class="hero">
+    <h1>Uliana Hrab</h1>
+    <p>Computer science student working on machine learning, computational geometry
+      and the unglamorous parts that make a result trustworthy.</p>
+    <p><a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> ·
+       <a href="https://github.com/draurug">GitHub</a></p>
+  </section>
+
+  <h2>Selected work</h2>
+  <ul class="work-list">
+    <li class="work-item">
+      <div class="cv-entry-head">
+        <p class="work-kind">Coursework · Machine learning</p>
+        <p class="cv-date">2026</p>
+      </div>
+      <h2><a href="#">Ethereum Fraud Detection</a></h2>
+      <p>Binary classification of Ethereum addresses as fraudulent or legitimate on
+        9,841 addresses with 50 transaction-derived features. LightGBM reaches F1 0.987
+        on held-out data, but the interesting part is what it took to trust that number:
+        a group-aware split that removes the 5.7% of test rows a naive split would have leaked.</p>
+      <ul class="metrics">
+        <li><span class="metric-value">0.987</span><span class="metric-label">F1, held-out</span></li>
+        <li><span class="metric-value">0.999</span><span class="metric-label">PR-AUC</span></li>
+        <li><span class="metric-value">9,841</span><span class="metric-label">addresses</span></li>
+      </ul>
+      <dl class="work-meta">
+        <div><dt>Stack</dt><dd>Python · scikit-learn · LightGBM · XGBoost · pytest</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/ethereum-fraud-detection">GitHub</a></dd></div>
+      </dl>
+    </li>
+
+    <li class="work-item">
+      <div class="cv-entry-head">
+        <p class="work-kind">Product · Full-stack TypeScript</p>
+        <p class="cv-date">2026</p>
+      </div>
+      <h2><a href="#">CrossW</a></h2>
+      <p>A crossword site where the theme lives in the clue rather than the word.
+        Four themed packs, eight levels each, no word repeated across levels.
+        Answers never reach the browser in readable form.</p>
+      <ul class="metrics">
+        <li><span class="metric-value">75</span><span class="metric-label">unit tests</span></li>
+        <li><span class="metric-value">5.4k</span><span class="metric-label">lines of TS</span></li>
+      </ul>
+      <dl class="work-meta">
+        <div><dt>Stack</dt><dd>Next.js 15 · React 19 · TypeScript · Vitest · Cloudflare Workers</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/CrossW">GitHub</a></dd></div>
+        <div><dt>Demo</dt><dd><a href="https://crossw.draugur3-14.workers.dev">Live</a></dd></div>
+      </dl>
+    </li>
+
+    <li class="work-item">
+      <div class="cv-entry-head">
+        <p class="work-kind">Academic writing</p>
+        <p class="cv-date">2026</p>
+      </div>
+      <h2><a href="#">Blockchain Papers</a></h2>
+      <p>Two papers written for a blockchain technology course, one of them on bin
+        packing as an NP-complete problem with the approximation algorithms that make
+        it tractable in practice.</p>
+      <dl class="work-meta">
+        <div><dt>Stack</dt><dd>LaTeX · Beamer</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/blockchain-papers">GitHub</a></dd></div>
+      </dl>
+    </li>
+  </ul>
+</main>
+
+<!-- ===== 2. Work page ======================================== -->
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Coursework · Machine learning</p>
+      <h1>Ethereum Fraud Detection</h1>
+      <p class="work-lede">One or two sentences saying what this is and why it is
+        worth reading, set slightly larger and quieter than the body.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2026</dd></div>
+        <div><dt>Stack</dt><dd>Python · LightGBM · pytest</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/ethereum-fraud-detection">GitHub</a></dd></div>
+      </dl>
+      <ul class="metrics">
+        <li><span class="metric-value">0.987</span><span class="metric-label">F1, held-out</span></li>
+        <li><span class="metric-value">0.999</span><span class="metric-label">PR-AUC</span></li>
+        <li><span class="metric-value">5.7%</span><span class="metric-label">leaked rows removed</span></li>
+      </ul>
+    </header>
+
+    <h2>Section heading</h2>
+    <p>Body text set for a measure of roughly sixty-six characters, which is where a
+      serif face stays comfortable to read. The rhythm is fixed by a single spacing
+      unit, so headings, lists and figures all land on the same vertical grid.</p>
+    <p>A second paragraph, to show the spacing between them and to confirm that long
+      unbroken tokens such as <code>group_aware_train_test_split</code> wrap instead of
+      pushing the page sideways.</p>
+
+    <h3>Subsection</h3>
+    <p>Body text with an <a href="#">inline link</a> and <code>inline_code</code>, plus
+      an <a href="https://example.org/a/very/long/path">external link</a> whose URL is
+      printed after it on paper.</p>
+
+    <ul>
+      <li>An unordered item.</li>
+      <li>Another item, with a nested list:
+        <ul><li>Nested item.</li></ul>
+      </li>
+    </ul>
+
+    <ol>
+      <li>First ordered item.</li>
+      <li>Second ordered item.</li>
+    </ol>
+
+    <blockquote><p>A pulled-out point worth reading twice, marked by a hairline rule
+      rather than a box.</p></blockquote>
+
+    <figure>
+      <img src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 260'%3E%3Crect width='640' height='260' fill='%23eae7de'/%3E%3Cpath d='M40 220 L180 150 L320 170 L460 70 L600 40' fill='none' stroke='%237a2622' stroke-width='3'/%3E%3C/svg%3E" alt="A placeholder line chart rising from left to right.">
+      <figcaption>Caption explaining what to look at. Set in the UI face, small and
+        quiet, under a hairline.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+    <table>
+      <caption>What this table reports.</caption>
+      <thead>
+        <tr><th scope="col">Model</th><th scope="col">F1</th><th scope="col">PR-AUC</th><th scope="col">Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">LightGBM</th><td>0.987</td><td>0.999</td><td>Group-aware split</td></tr>
+        <tr><th scope="row">XGBoost</th><td>0.981</td><td>0.997</td><td>Same features</td></tr>
+        <tr><th scope="row">Logistic regression</th><td>0.842</td><td>0.911</td><td>Baseline</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <pre><code>def group_aware_split(df, groups, test_size=0.2):
+    # escape &lt; and &amp; inside code blocks
+    splitter = GroupShuffleSplit(test_size=test_size, random_state=0)
+    train_idx, test_idx = next(splitter.split(df, groups=groups))
+    return df.iloc[train_idx], df.iloc[test_idx]</code></pre>
+
+    <p class="note">Aside or caveat, set smaller and quieter with a rule down the left.</p>
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="#">← All work</a>
+    <a href="#">Next: CrossW →</a>
+  </nav>
+</main>
+
+<!-- ===== 3. CV page ========================================== -->
+<main class="page page--cv">
+  <h1 class="no-print">CV (screen heading, hidden in print)</h1>
+
+  <section class="cv-section">
+    <h2>Education</h2>
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>BSc Computer Science</h3>
+        <p class="cv-date">2023 — 2027</p>
+      </div>
+      <p>Relevant coursework: machine learning, computational geometry, numerical
+        methods, computer graphics, networked systems.</p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Projects</h2>
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Ethereum Fraud Detection</h3>
+        <p class="cv-date">2026</p>
+      </div>
+      <ul>
+        <li>Built a group-aware split that removed 5.7% leaked test rows.</li>
+        <li>LightGBM at F1 0.987 / PR-AUC 0.999 on held-out data.</li>
+      </ul>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Voronoi Path Planner</h3>
+        <p class="cv-date">2026</p>
+      </div>
+      <ul>
+        <li>Clearance field plus binary search over thresholds, then Dijkstra in the corridor.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Skills</h2>
+    <dl class="skills-grid">
+      <dt>Languages</dt><dd>Python, C++17/20, TypeScript, Octave</dd>
+      <dt>ML</dt><dd>scikit-learn, LightGBM, XGBoost, pandas, NumPy</dd>
+      <dt>Web</dt><dd>Next.js, React, Cloudflare Workers</dd>
+      <dt>Tooling</dt><dd>pytest, Vitest, CMake, Git, LaTeX</dd>
+    </dl>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV — Uliana Hrab</title>
+<meta name="description" content="Curriculum vitae of Uliana Hrab: applied mathematics, machine learning and C++.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="index.html">Work</a>
+    <a href="cv.html" aria-current="page">CV</a>
+  </nav>
+</header>
+
+<main class="page page--cv">
+  <header class="work-head">
+    <h1>Curriculum vitae</h1>
+    <p class="work-lede">Applied mathematics student in Norway, working on machine learning,
+    computational geometry and systems programming. Looking for a junior developer or data
+    role where the work is technical.</p>
+    <dl class="work-meta">
+      <div><dt>Email</dt><dd><a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a></dd></div>
+      <div><dt>Phone</dt><dd>+47 46 55 57 59</dd></div>
+      <div><dt>Location</dt><dd>Norway</dd></div>
+      <div><dt>GitHub</dt><dd><a href="https://github.com/draurug">github.com/draurug</a></dd></div>
+    </dl>
+    <p class="no-print"><a href="assets/pdf/Uliana-Hrab-CV.pdf">Download as PDF</a></p>
+  </header>
+
+  <section class="cv-section">
+    <h2>Selected work</h2>
+    <p class="note">Longer write-ups of each project are on the <a href="index.html">work page</a>.</p>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="work/ethereum-fraud-detection.html">Ethereum Fraud Detection</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Classified 9,841 Ethereum addresses as fraudulent or legitimate from 50
+      transaction-derived features. LightGBM reached F1 0.987 on held-out data. Found and fixed
+      a leak first: a naive random split put 5.7% of test rows in the training set through
+      duplicate feature profiles, so the split was made group-aware and models were selected by
+      cross-validated PR-AUC rather than by test score.
+      <br><span class="cv-stack">Python · scikit-learn · LightGBM · XGBoost · pytest</span></p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="work/crossw.html">CrossW</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Designed and shipped a themed crossword site, from the product idea through to a live
+      deployment. Four content packs, eight levels each, 75 unit tests, roughly 5,400 lines of
+      TypeScript. Answers are compiled to opaque indices at build time so they never reach the
+      browser in readable form.
+      <br><span class="cv-stack">Next.js 15 · React 19 · TypeScript · Vitest · Cloudflare Workers</span></p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="work/voronoi-path-planner.html">Voronoi Path Planner</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Interactive path planner that optimises for clearance rather than distance: it builds a
+      clearance field against obstacles, binary-searches the largest threshold that keeps start
+      and goal connected, then runs Dijkstra inside that corridor. Accompanied by a generated
+      figure set and a written report.
+      <br><span class="cv-stack">C++ · OpenGL · FreeGLUT · NumPy · SciPy</span></p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="work/tictactoe.html">Networked Tic-Tac-Toe</a> and <a href="work/battleship.html">Battleship</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Two Qt desktop games in C++. The first plays over TCP with a packet protocol on
+      Boost.Asio, an invitation handshake and turn synchronisation between clients; the second
+      keeps the game rules entirely free of Qt so the widget only paints.
+      <br><span class="cv-stack">C++17/20 · Qt · Boost.Asio · CMake</span></p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Technical skills</h2>
+    <div class="skills-grid">
+      <div>
+        <h3>Languages</h3>
+        <p>Python, C++ (17/20), TypeScript, JavaScript, SQL, C#, Octave/MATLAB, LaTeX</p>
+      </div>
+      <div>
+        <h3>Data and machine learning</h3>
+        <p>scikit-learn, LightGBM, XGBoost, pandas, NumPy, SciPy, matplotlib, seaborn,
+        Jupyter, Power BI</p>
+      </div>
+      <div>
+        <h3>Web and tooling</h3>
+        <p>Next.js, React, Vue, Node, PostgreSQL, Git, CMake, pytest, Vitest, Docker,
+        Cloudflare Workers</p>
+      </div>
+      <div>
+        <h3>Other</h3>
+        <p>OpenGL, Qt, Boost.Asio, Unity and C#, Blender, Arduino</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Education</h2>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>BSc Applied Mathematics — Odesa I. I. Mechnikov National University</h3>
+        <span class="cv-date">2023 — present</span>
+      </div>
+      <p>Institute for Optimal Control and Economic Cybernetics. Coursework in numerical methods,
+      computational geometry and computer graphics, decision theory, blockchain technology and
+      machine learning. Course paper on fraud detection, plus a bonus project on Voronoi-based
+      path planning.</p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>IT Step Academy — IT-focused secondary programme</h3>
+        <span class="cv-date">2019 — 2022</span>
+      </div>
+      <p>Programming fundamentals, game development in Unity and C#, 3D modelling in Blender,
+      and Arduino.</p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Odesa Lyceum no. 1 (A. P. Bystrina) — secondary education</h3>
+        <span class="cv-date">2016 — 2023</span>
+      </div>
+      <p>English specialisation.</p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Experience</h2>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Logistics manager — SmartAuto LLC</h3>
+        <span class="cv-date">May — Aug 2024</span>
+      </div>
+      <p>Coordinated vehicle logistics and kept the operational records that the scheduling
+      depended on.</p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Mentor — IT2School</h3>
+        <span class="cv-date">Dec 2023 — Jan 2025</span>
+      </div>
+      <p>Taught programming to school students and supported them through their assignments.</p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>Project lead — Mechnykov student card</h3>
+        <span class="cv-date">2023 — present</span>
+      </div>
+      <p>Led the student card project at the university. Member of the Student Union and of
+      AtomSpace.</p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Languages</h2>
+    <ul>
+      <li><strong>Ukrainian</strong> and <strong>Russian</strong> — native</li>
+      <li><strong>English</strong> — C1, certified by the London School of English (2025)</li>
+      <li><strong>Norwegian</strong> — B2 course completed, Læringssenteret for voksne i Ringerike kommune; Norskprøven passed</li>
+      <li><strong>German</strong> — Goethe-Institut certificate</li>
+    </ul>
+  </section>
+
+  <section class="cv-section">
+    <h2>Certificates</h2>
+    <ul>
+      <li>English C1 — London School of English, 2025</li>
+      <li>Working with Data in Python — DataCamp, 2024</li>
+      <li>Data Visualisation in Power BI — DataCamp, 2024</li>
+      <li>Data Analysis in Google Sheets — DataCamp, 2024</li>
+      <li>C++ Intermediate — Sololearn, 2023</li>
+      <li>C++ Basics — Coursera, 2023</li>
+    </ul>
+  </section>
+
+  <section class="cv-section">
+    <h2>References</h2>
+    <p>Available on request.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>
