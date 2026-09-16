@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Networked TicTacToe — Uliana Hrab</title>
+<meta name="description" content="A Qt client for a networked tic-tac-toe: the invite handshake, role assignment and turn synchronisation over a text protocol.">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../index.html">Work</a>
+    <a href="../cv.html">CV</a>
+  </nav>
+</header>
+
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Coursework · Networked desktop C++</p>
+      <h1>Getting two clients to agree who is X</h1>
+      <p class="work-lede">A Qt Widgets client for a networked tic-tac-toe. The game is three-in-a-row; the actual work is the handshake that takes two connected strangers to a shared, consistent game state over a protocol with no turn token and no game-over message.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2024–2025</dd></div>
+        <div><dt>Stack</dt><dd>C++20 · Qt Widgets · Boost.Asio · CMake</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/tictactoe">GitHub</a></dd></div>
+      </dl>
+      <ul class="metrics">
+        <li><span class="metric-value">1090</span><span class="metric-label">lines of my C++</span></li>
+        <li><span class="metric-value">14</span><span class="metric-label">protocol message types</span></li>
+        <li><span class="metric-value">942</span><span class="metric-label">lines of third-party server</span></li>
+      </ul>
+    </header>
+
+    <h2>What is mine and what is not</h2>
+    <p>Worth stating first. The client is mine: the UI, the dialogs, the player list, and <code>Logic</code>, the state machine between them and the socket. The server, the TCP plumbing and the protocol constants are <strong>not</strong> — they come from a course repository by another author, kept as a GPL-3.0 git submodule so the boundary stays visible rather than quietly absorbed. My <code>Logic</code> derives from their <code>tic_tac::TicTacClient</code>. The 942 lines in the metric above are theirs, counted separately for that reason.</p>
+
+    <h2>The protocol</h2>
+    <p>Plain ASCII, comma-separated fields, each message terminated by a semicolon. Fourteen message types, split by prefix into client-to-server and server-to-client. The server is a relay and a registry: it tracks who is online and who is busy and forwards invitations and moves. It arbitrates nothing about the game itself. Framing bites first — several messages can land in one TCP read, so the reader splits on <code>;</code> rather than assuming one message per packet.</p>
+
+    <div class="table-wrap">
+    <table>
+      <caption>The messages that carry the handshake.</caption>
+      <thead><tr><th scope="col">Message</th><th scope="col">Direction</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Hi</th><td>S→C</td><td>Greeting; client must answer with a name</td></tr>
+        <tr><th scope="row">[PlayerName]</th><td>C→S</td><td>Register under this name</td></tr>
+        <tr><th scope="row">[PlayerList]</th><td>S→C</td><td>Name/busy pairs; empty busy field means free</td></tr>
+        <tr><th scope="row">[Invite]</th><td>C→S</td><td>Ask to play against someone</td></tr>
+        <tr><th scope="row">[Invitation]</th><td>S→C</td><td>You have been invited</td></tr>
+        <tr><th scope="row">[AcceptInvitation]</th><td>C→S</td><td>Accept</td></tr>
+        <tr><th scope="row">[InvitationAccepted]</th><td>S→C</td><td>Your invitation was accepted</td></tr>
+        <tr><th scope="row">[Step] / [OnStep]</th><td>both</td><td>A move, as symbol plus coordinates</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>The invite handshake and role assignment</h2>
+    <p>A client walks through <code>cst_initial</code> → <code>cst_handshaking</code> → <code>cst_waiting_user_choice</code>, and from there either into <code>cst_inviting</code> or <code>cst_invite_responding</code>, and on success into <code>cst_gaming</code>.</p>
+    <pre><code>  A                      server                      B
+  |-- [Invite],B ------&gt;|                             |
+  |                     |-- [Invitation],A ---------&gt;|  modal dialog
+  |                     |&lt;--- [AcceptInvitation],A --|  B accepts
+  |&lt;- [InvitationAccepted],B                          |
+  |   A := O, waits     |               B := X, moves first</code></pre>
+    <p>The part I find interesting is that <strong>roles are never negotiated on the wire</strong>. There is no message that says "you are X". The convention is positional — whoever accepts plays X and moves first — and each client sets its own <code>m_playerRoleX</code> locally at the moment it learns the outcome, from opposite branches of the code.</p>
+    <p>That works, and it costs a round trip less than negotiating. It is also fragile in a specific way: if either side ever takes the wrong branch, the two clients disagree silently and both boards drift apart while everything still looks fine. So I added a check in the step handler that rejects any incoming move claiming the symbol this client believes is its own. It cannot repair the disagreement, but it turns silent corruption into a visible refusal, which is the difference between a bug you can find and one you cannot.</p>
+
+    <h2>Turn synchronisation, and the missing end of the game</h2>
+    <p>There is no turn token in the protocol. Each client holds a single <code>bool m_makingStep</code>: set true on the accepting side at game start and false on the inviting side, cleared when you send your own move, set when a move arrives. Because everything is relayed through one server over an ordered TCP stream, the two flags stay complementary without any further coordination. The board is replicated rather than shared — both clients apply the same moves to their own grid.</p>
+    <blockquote><p>The protocol reserves [GameEnded] and [GameIsOver]. The client library never sends them, and handles the latter with an empty branch. Nothing detected a win.</p></blockquote>
+    <p>So the game had no ending. I resolved it locally instead of extending someone else's protocol: because both clients hold the full grid and apply the same moves, both reach the same verdict with no round trip. On a win or draw the client reports the result, sends <code>[CloseGame]</code> so the server stops listing it as busy, clears the board and returns to the player list. Replicated state is what makes that legitimate — the conclusion is a pure function of a grid both sides already agree on.</p>
+
+    <h2>What I had to fix</h2>
+    <p>The client compiled but was not playable. The click handler bounds-checked a three-by-three array with <code>x &lt;= 3</code>, so a click in the widget's margin wrote past the end of it. It checked neither the state machine nor whose turn it was, so you could mark cells before a game started and move twice in a row. The grid was never cleared between games. The "waiting for response" dialog was heap-allocated, never freed, and dereferenced through a stale pointer after a cancel. And <code>Scene</code> declared a scoreboard and reset buttons that were never constructed, with methods that dereferenced them — unreachable in the networked flow, but a crash waiting for whoever wired them up.</p>
+    <p>On the build side, <code>find_package</code> was asking Qt for a component called <code>Boost</code>, and the Boost lookup relied on CMake's <code>FindBoost</code>, removed in CMake 4.0.</p>
+
+    <h2>How far it is verified</h2>
+    <p>I wrote a raw-socket probe in Python that drives the wire protocol against the real server — register, invite, accept, a move each way — and it passes. Two real clients started headless both connect and register cleanly.</p>
+    <p class="note">What I have <em>not</em> verified is a full two-client game through the GUI. Accepting an invitation goes through a modal dialog and every move is a widget click, so driving one headlessly needs a UI-automation harness this repo does not have. The invite, turn and game-over logic is implemented and compiles, and the protocol underneath it is tested, but the combination has only been reasoned about, not exercised end to end.</p>
+
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="../index.html">← All work</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

@@ -97,8 +97,8 @@
     "title": "Networked Tic-Tac-Toe",
     "year": "2026",
     "kind": "Desktop · Systems",
-    "summary": "A desktop tic-tac-toe played over TCP. The game itself is trivial; the work is everything around it — a packet protocol on Boost.Asio, a player list, an invitation handshake with accept and decline, and turn synchronisation between two clients.",
-    "stack": ["C++20", "Qt", "Boost.Asio", "CMake"],
+    "summary": "A Qt client for a multiplayer game server: player list, invitation handshake with accept and decline, turn synchronisation and game-over detection. The Boost.Asio transport underneath is a third-party course library, stated as such.",
+    "stack": ["C++20", "Qt", "CMake"],
     "metrics": [
       { "value": "~1.2k", "label": "lines of C++" }
     ],
@@ -111,7 +111,7 @@
     "title": "Battleship",
     "year": "2026",
     "kind": "Desktop · C++",
-    "summary": "Battleship on Qt with the domain kept strictly out of the UI: Board, Ship and Game know nothing about widgets, and BoardWidget does the painting. Builds against Qt6 and falls back to Qt5 when Qt6 is not there.",
+    "summary": "Battleship on Qt with the domain kept strictly out of the UI: Board, Ship and Game know nothing about widgets, and BoardWidget does the painting. Builds against Qt6; the Qt5 fallback in the CMake file has not been compiled.",
     "stack": ["C++17", "Qt6", "Qt5", "CMake"],
     "metrics": [
       { "value": "~1k", "label": "lines of C++" }
