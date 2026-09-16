@@ -67,7 +67,7 @@
     "title": "Numerical Methods",
     "year": "2026",
     "kind": "Coursework · Computational mathematics",
-    "summary": "Eight self-contained labs in Octave, each with its own write-up and generated figures: interpolation on uniform against Chebyshev nodes (where the Runge phenomenon shows up plainly), splines, least squares, Simpson integration with Runge error control, Runge-Kutta with adaptive stepping, and an Adams predictor-corrector checked against ode45.",
+    "summary": "Eight self-contained labs in Octave, each with its own write-up and generated figures: interpolation on uniform against Chebyshev nodes (where the plots turn out to show monomial-basis conditioning rather than the Runge phenomenon), splines, least squares, Simpson integration with Runge error control, Runge-Kutta with adaptive stepping, and an Adams predictor-corrector checked against ode45.",
     "stack": ["Octave", "MATLAB", "LaTeX"],
     "metrics": [
       { "value": "8", "label": "labs" },
