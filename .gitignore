@@ -14,4 +14,4 @@ __pycache__/
 node_modules/
 
 # working copies of source projects — published as their own repos
-work/
+/work/
