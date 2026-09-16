@@ -520,7 +520,10 @@ dd { margin: 0.15rem 0 0.8rem; }
     font-size: 7.5pt;
     word-break: break-all;
   }
-  a[href^="mailto:"]::after, a[href^="#"]::after { content: ""; }
+  /* Not where the link text already is the URL, or in the contact header. */
+  a[href^="mailto:"]::after,
+  a[href^="#"]::after,
+  .work-meta a::after { content: ""; }
 
   .cv-entry, figure, blockquote, table, .metrics, .skills-grid > div { break-inside: avoid; }
   .cv-section { margin-bottom: 0.5em; break-inside: auto; }
