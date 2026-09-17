@@ -20,12 +20,12 @@
     "title": "CrossW",
     "year": "2026",
     "kind": "Product · Full-stack TypeScript",
-    "summary": "A crossword site where the theme lives in the clue rather than the word. ТРАМВАЙ is an ordinary word; \"the transport that beheaded Berlioz\" makes it belong to The Master and Margarita. Four themed packs with no word repeated across levels. Answers never reach the browser in readable form.",
+    "summary": "A crossword site where the theme lives in the clue rather than the word. ТРАМВАЙ is an ordinary word; \"the transport that beheaded Berlioz\" makes it belong to The Master and Margarita. Four themed packs, thirty-two puzzles, with no word repeated across levels. Answers never reach the browser in readable form.",
     "stack": ["Next.js 15", "React 19", "TypeScript", "Tailwind", "Vitest", "Cloudflare Workers"],
     "metrics": [
       { "value": "75", "label": "unit tests" },
       { "value": "5.4k", "label": "lines of TS" },
-      { "value": "4", "label": "themed packs" }
+      { "value": "32", "label": "puzzles live" }
     ],
     "repo": "https://github.com/draurug/CrossW",
     "demo": "https://crossw.draugur3-14.workers.dev",

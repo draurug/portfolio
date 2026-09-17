@@ -32,7 +32,7 @@
       <ul class="metrics">
         <li><span class="metric-value">75</span><span class="metric-label">Vitest tests, core and engine</span></li>
         <li><span class="metric-value">~5.4k</span><span class="metric-label">lines of TypeScript</span></li>
-        <li><span class="metric-value">4</span><span class="metric-label">themed packs, eight levels each</span></li>
+        <li><span class="metric-value">32</span><span class="metric-label">crosswords live, four themed packs</span></li>
       </ul>
     </header>
 
@@ -46,11 +46,13 @@
 
     <p>That moves the constraint off the grid and into the writing, where it is tractable. Any word the fill needs can be pulled into the theme if the book gives it a moment. The generator knows which entries in a pack have a topical clue available and prefers them when scoring a candidate grid. The proportion of genuinely on-theme clues then becomes a number I can measure and optimise.</p>
 
-    <p>Four packs exist so far, each drawn from one book: <em>The Master and Margarita</em>, <em>Sherlock Holmes</em>, <em>The Twelve Chairs</em>, and the Emelya folk tale. A pack holds 150–200 entries. An entry is an answer with one or more clues, tagged by kind, some marked <code>hard</code> for connoisseurs. Each pack generates eight levels of increasing size and difficulty. Words are <em>spent</em>: once an answer is used in a level of a theme it leaves the pool entirely, so later levels in that theme never recycle it.</p>
+    <p>Four packs exist so far, each drawn from one book: <em>The Master and Margarita</em>, <em>Sherlock Holmes</em>, <em>The Twelve Chairs</em>, and the Emelya folk tale. A pack holds 175 to 329 entries, 1,103 in total across 59 categories. An entry is an answer with two clues: one topical, one plain dictionary. Clues that give away the ending are marked <code>hard</code> and withheld from the easy levels. 168 topical clues carry the exact line from the book as a further hint. Each pack generates eight levels of increasing size and difficulty. Words are <em>spent</em>: once an answer is used in a level of a theme it leaves the pool entirely, so later levels in that theme never recycle it.</p>
 
     <h3>The deployed site</h3>
 
-    <p>The deployed build opens on a list. It carries a title, the line "Определения тут не из словаря, а из книг" (the clues here come from books, not dictionaries), four starter puzzles marked Easy at 11×11 with their word counts, and four theme cards with a one-line description of each book. The footer counts what is live: currently 12 crosswords and 272 words. That is three levels per theme, against the eight the generator produces; the remaining levels are built but not yet deployed. Clicking a puzzle opens the grid and the numbered clue list. Both are keyboard-driven, which follows from the "designed for desktop" decision stated up front. There is no mobile layout and no arrow-word variant.</p>
+    <p>The deployed build opens on a list. It carries a title, the line "Определения тут не из словаря, а из книг" (the clues here come from books, not dictionaries), four starter puzzles marked Easy at 11×11 with their word counts, and four theme cards with a one-line description of each book. The footer counts what is live: 32 crosswords and 565 words, which is all eight levels of every theme. Clicking a puzzle opens the grid and the numbered clue list. Both are keyboard-driven, which follows from the "designed for desktop" decision stated up front. There is no mobile layout and no arrow-word variant.</p>
+
+    <p>A <a href="https://crossw.draugur3-14.workers.dev/sources/">sources page</a> carries the attribution. The grid filler draws its vocabulary from OpenCorpora (CC BY-SA 4.0) and drops rare words by wordfreq frequency (Apache 2.0). Book texts are not copied or stored: a topical clue restates a fact in its own words, and every entry records which book the fact comes from.</p>
 
     <h2>Structure</h2>
 
