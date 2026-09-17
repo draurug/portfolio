@@ -511,7 +511,6 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   width: 104px;
   height: 104px;
   object-fit: cover;
-  filter: grayscale(1);
   border: 2px solid var(--rule-strong);
   flex: 0 0 auto;
 }
