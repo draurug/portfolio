@@ -7,8 +7,7 @@ docs/
   index.html          list of work
   cv.html             CV, with print styles for the PDF
   work/*.html         one page per project
-  assets/css/style.css   index and work pages (Swiss grid)
-  assets/css/cv.css      CV only (editorial)
+  assets/css/cv.css      the whole site
   assets/img|pdf
   data/projects.json  data reference for the work list (the HTML is hand-written)
 ```
