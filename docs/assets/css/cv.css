@@ -318,8 +318,9 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   line-height: 1.45;
   color: var(--ink);
   max-width: none;
-  margin-bottom: 1.75rem;
+  margin-bottom: 0.9rem;
 }
+.work-lede:last-of-type { margin-bottom: 2.75rem; }
 
 .work-meta {
   margin: 0 0 2.5rem;
@@ -546,7 +547,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 /* --- Download button: sits in the free space beside the name --- */
 .cv-download {
   margin-left: auto;
-  align-self: flex-end;
+  align-self: flex-start;
   display: inline-block;
   padding: 0.75rem 1.2rem;
   background: var(--accent);
@@ -562,7 +563,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .cv-download:hover { background: var(--ink); color: var(--paper); }
 .cv-download:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (min-width: 46em) {
-  .cv-download { transform: translateY(0.9rem); }
+  .cv-download { transform: translateY(0.25rem); }
 }
 @media (max-width: 45.99em) {
   .cv-download { margin-left: 0; align-self: flex-start; }
