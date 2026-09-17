@@ -4,12 +4,12 @@ Static site, no build step. Everything that gets deployed lives in `docs/` — t
 
 ```
 docs/
-  index.html          list of work
-  cv.html             CV, with print styles for the PDF
-  work/*.html         one page per project
+  index.html          CV, with print styles for the PDF
+  projects.html       list of projects
+  projects/*.html     one page per project
   assets/css/cv.css      the whole site
   assets/img|pdf
-  data/projects.json  data reference for the work list (the HTML is hand-written)
+  data/projects.json  data reference for the project list (the HTML is hand-written)
 ```
 
 ## Run locally
@@ -25,10 +25,10 @@ GitHub Pages, serving the `docs/` folder from the `main` branch. Pushing to `mai
 ## Regenerating the CV PDF
 
 ```bash
-cd docs && python3 -m weasyprint cv.html assets/pdf/Uliana-Hrab-CV.pdf
+cd docs && python3 -m weasyprint index.html assets/pdf/Uliana-Hrab-CV.pdf
 ```
 
-## Note on `work/`
+## Note on `work/` (repo root)
 
 `work/` holds working copies of the source projects while they were being translated and
 cleaned up. It is gitignored here — each project is published as its own repository. The
