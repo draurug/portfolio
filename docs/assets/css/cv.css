@@ -179,7 +179,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 }
 @media (min-width: 46em) { :root { --gutter: 2.25rem; } .page { padding-top: 3.25rem; } }
 @media (min-width: 62em) {
-  .page--work, .page--cv { max-width: calc(var(--margin-col) + var(--col-gap) + var(--text-col) + 4.5rem); }
+  .page--work, .page--cv, .page--index { max-width: calc(var(--margin-col) + var(--col-gap) + var(--text-col) + 4.5rem); }
 }
 
 .site-header {
