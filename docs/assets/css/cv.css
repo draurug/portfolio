@@ -563,7 +563,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .cv-download:hover { background: var(--ink); color: var(--paper); }
 .cv-download:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @media (min-width: 46em) {
-  .cv-download { transform: translateY(0.25rem); }
+  .cv-download { transform: translateY(2.6rem); }
 }
 @media (max-width: 45.99em) {
   .cv-download { margin-left: 0; align-self: flex-start; }
