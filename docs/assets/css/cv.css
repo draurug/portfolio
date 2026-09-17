@@ -26,7 +26,7 @@
   --measure: 60ch;
   --step: 1.45rem;
   --margin-col: 13rem;
-  --text-col: 38rem;
+  --text-col: 44rem;
   --col-gap: 3.25rem;
 }
 
@@ -319,7 +319,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   font-size: 1.25rem;
   line-height: 1.4;
   color: var(--ink-mid);
-  max-width: 46ch;
+  max-width: 68ch;
   margin-bottom: 1.75rem;
 }
 
@@ -426,7 +426,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .cv-entry-head > .cv-date { flex: 0 0 auto; margin-left: auto; }
 .cv-entry-head a { color: var(--ink); text-decoration: none; }
 .cv-entry-head a:hover { color: var(--accent); }
-.cv-entry > p { margin: 0; font-size: 0.97rem; max-width: 62ch; }
+.cv-entry > p { margin: 0; font-size: 0.97rem; max-width: 80ch; }
 .cv-stack { display: inline-block; font-size: 0.8rem; color: var(--ink-mid); margin-top: 0.3rem; }
 
 .skills-grid { display: grid; grid-template-columns: 1fr; gap: 1.4rem 2.5rem; }
