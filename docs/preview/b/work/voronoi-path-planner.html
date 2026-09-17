@@ -20,8 +20,8 @@
   <article>
     <header class="work-head">
       <p class="work-kind">Coursework · Computational geometry</p>
-      <h1>Planning a path that stays as far from the walls as it can</h1>
-      <p class="work-lede">A robot with physical width does not want the shortest route; it wants the route whose tightest squeeze is as wide as possible. This is an interactive planner that computes a clearance field against segment obstacles, binary-searches for the widest corridor connecting start and goal, and then runs Dijkstra inside it.</p>
+      <h1>Widest-path planning on a clearance field</h1>
+      <p class="work-lede">A robot with physical width needs the route whose tightest squeeze is as wide as possible. This is an interactive planner that computes a clearance field against segment obstacles, binary-searches for the widest corridor connecting start and goal, then runs Dijkstra inside it.</p>
       <dl class="work-meta">
         <div><dt>Year</dt><dd>2026</dd></div>
         <div><dt>Stack</dt><dd>C++ · FreeGLUT · OpenGL</dd></div>
@@ -39,19 +39,19 @@
       <figcaption>The program running. Heat map is the clearance field (red = close to an obstacle, blue = far), black outlines are the obstacles, the white polyline is the planned route. The number at the top is the minimum clearance along it.</figcaption>
     </figure>
 
-    <h2>Why "shortest" is the wrong objective</h2>
+    <h2>The objective</h2>
 
-    <p>The standard grid-planning demo asks for the shortest path and gets a route that scrapes along every corner it can. That is fine for a point. It is not fine for anything with a body: a real robot has a radius, its position estimate has error, and its controller has tracking error, and all three eat into whatever gap the planner left. A path two centimetres shorter that passes within one centimetre of a table leg is strictly worse.</p>
+    <p>A shortest-path planner on a grid returns a route that scrapes along every corner it can. That suits a point mass. A real robot has a radius, its position estimate has error, and its controller has tracking error, and all three eat into whatever gap the planner left. A path two centimetres shorter that passes within one centimetre of a table leg is worse.</p>
 
-    <p>The objective that matches the physical constraint is a <em>bottleneck</em> one. A path's quality is not its length but the smallest clearance anywhere along it:</p>
+    <p>The objective that matches the physical constraint is a <em>bottleneck</em> one. A path's quality is the smallest clearance anywhere along it:</p>
 
     <blockquote><p>maximise over γ of ( minimum over x in γ of c(x) ), where c(x) is the distance from x to the nearest obstacle.</p></blockquote>
 
-    <p>This is the widest-path problem. Note what it does <em>not</em> care about: length. Every path through the same narrowest gap scores identically, so the objective alone leaves a huge set of optimal answers, including ones that wander pointlessly. Hence two stages: find the best achievable bottleneck, then pick the shortest route that achieves it. Only the second stage cares about distance, and only inside a region the first has already declared safe.</p>
+    <p>This is the widest-path problem. Length does not enter it. Every path through the same narrowest gap scores identically, so the objective alone leaves a huge set of optimal answers, including ones that wander pointlessly. The planner therefore runs in two stages: find the best achievable bottleneck, then pick the shortest route that achieves it. Only the second stage measures distance, and it does so inside a region the first has already declared safe.</p>
 
     <h2>The clearance field</h2>
 
-    <p>Obstacles live in a flat <code>std::vector&lt;Seg&gt;</code> of line segments — no polygons, no topology, just endpoint pairs. Each random rectangle contributes four, and the window border four more, so the frame is treated as a wall instead of letting paths hug the screen edge. With five to seven rectangles that is 24 to 32 segments.</p>
+    <p>Obstacles live in a flat <code>std::vector&lt;Seg&gt;</code> of line segments, with no polygons and no topology, just endpoint pairs. Each random rectangle contributes four, and the window border four more, so the frame is treated as a wall instead of letting paths hug the screen edge. Five to seven rectangles give 24 to 32 segments.</p>
 
     <p>The 960 × 720 window is cut into 6-pixel cells: a 160 × 120 grid, 19,200 cells. For each cell centre, <code>computeClearance</code> brute-forces the minimum distance to every segment:</p>
 
@@ -61,51 +61,51 @@
         best = min(best, distPointSeg(centre, s))
     clearance[cell] = best</code></pre>
 
-    <p>Point-to-segment distance is the usual clamped projection: project the point onto the infinite line, clamp the parameter <code>t</code> to [0, 1] so points beyond either end fall back to that endpoint, then measure to the projected point. The clamp is the whole reason this works for segments rather than lines, and it is why the field around a rectangle corner has circular contours rather than a wedge.</p>
+    <p>Point-to-segment distance is the usual clamped projection: project the point onto the infinite line, clamp the parameter <code>t</code> to [0, 1] so points beyond either end fall back to that endpoint, then measure to the projected point. The clamp is what makes this work for segments rather than lines, and it is why the field around a rectangle corner has circular contours rather than a wedge.</p>
 
-    <p>That is 19,200 × ~28 ≈ 540,000 distance evaluations — fast enough that no spatial index is warranted at this size. It is <code>O(N·m)</code> for <code>N</code> cells and <code>m</code> segments, and it would become the bottleneck long before the search does if the obstacle count grew.</p>
+    <p>That is 19,200 × ~28 ≈ 540,000 distance evaluations, fast enough that no spatial index is warranted at this size. The cost is <code>O(N·m)</code> for <code>N</code> cells and <code>m</code> segments, and it would become the bottleneck long before the search does if the obstacle count grew.</p>
 
     <figure>
       <img src="../assets/img/voronoi-clearance.png" alt="Heat map of the clearance field over a scene of six rectangles, red near the obstacles grading through yellow to blue in the open areas.">
-      <figcaption>The clearance field for a fixed scene. The blue streaks running between obstacles are ridges — the locus of points that are locally as far from everything as they can be.</figcaption>
+      <figcaption>The clearance field for a fixed scene. The blue streaks running between obstacles are ridges: the locus of points that are locally as far from everything as they can be.</figcaption>
     </figure>
 
-    <p>The blue ridges are the interesting part. A point sits on a ridge when it is equidistant from its two nearest obstacles — exactly the definition of an edge of the generalised Voronoi diagram of the segment set, the medial axis of the free space. The planner never constructs that diagram. It samples the field that implies it and lets the search find the ridges by itself: no degenerate-case handling, no parabolic-arc arithmetic, but only as much accuracy as the grid provides.</p>
+    <p>A point sits on a ridge when it is equidistant from its two nearest obstacles, which is the definition of an edge of the generalised Voronoi diagram of the segment set, the medial axis of the free space. The planner never constructs that diagram. It samples the field that implies it and lets the search find the ridges by itself. That removes degenerate-case handling and parabolic-arc arithmetic, at the cost of only as much accuracy as the grid provides.</p>
 
     <figure>
       <img src="../assets/img/voronoi-medial-axis.png" alt="The same rectangular obstacles with red curves running midway between them, forming a connected network of corridors.">
-      <figcaption>The generalised Voronoi diagram of the same obstacle set, computed analytically for illustration. The planner does not build this — it is what the ridges of the clearance field approximate.</figcaption>
+      <figcaption>The generalised Voronoi diagram of the same obstacle set, computed analytically for illustration. The planner does not build it. The ridges of the clearance field approximate it.</figcaption>
     </figure>
 
     <h2>Binary search over the threshold</h2>
 
-    <p>The trick that makes the bottleneck objective searchable is to stop optimising over paths and optimise over a scalar instead. Fix a threshold <code>T</code>, delete every cell with <code>clearance &lt; T</code>, and ask one yes/no question: are start and goal still in the same connected component? A plain 8-connected BFS answers that in <code>O(N)</code>.</p>
+    <p>The bottleneck objective becomes searchable by optimising over a scalar instead of over paths. Fix a threshold <code>T</code>, delete every cell with <code>clearance &lt; T</code>, and ask one yes/no question: are start and goal still in the same connected component? A plain 8-connected BFS answers that in <code>O(N)</code>.</p>
 
-    <p>The answer is monotone in <code>T</code>: raising the threshold only removes cells, so a component once split stays split. The predicate is true on <code>[0, T*]</code> and false above, and <code>T*</code> — the largest threshold keeping them connected — is exactly the best achievable bottleneck. Monotone predicate, so: bisect.</p>
+    <p>The answer is monotone in <code>T</code>. Raising the threshold only removes cells, so a component once split stays split. The predicate is true on <code>[0, T*]</code> and false above, and <code>T*</code>, the largest threshold keeping the endpoints connected, is exactly the best achievable bottleneck. A monotone predicate can be bisected.</p>
 
     <figure>
       <img src="../assets/img/voronoi-binary-search.png" alt="Step plot of connectivity against clearance threshold: connected up to about 82 px, then a vertical drop to disconnected.">
       <figcaption>Connectivity as a function of the threshold, for one scene. The single step is what makes bisection valid; the arrows mark where successive midpoints land.</figcaption>
     </figure>
 
-    <p>The upper bracket is <code>min(clearance[start], clearance[goal])</code>, since no path's bottleneck can exceed the clearance at its own endpoints; the lower bracket is 0. The loop runs a fixed 40 bisections rather than testing convergence — 40 halvings of a range under 400 px puts the residual interval below float precision. One guard precedes it: if the points are not connected even at <code>T = 0.5</code>, the planner reports no path. That happens when a click lands inside a rectangle.</p>
+    <p>The upper bracket is <code>min(clearance[start], clearance[goal])</code>, since no path's bottleneck can exceed the clearance at its own endpoints. The lower bracket is 0. The loop runs a fixed 40 bisections rather than testing convergence: 40 halvings of a range under 400 px puts the residual interval below float precision. One guard precedes it. If the points are not connected even at <code>T = 0.5</code>, the planner reports no path, which happens when a click lands inside a rectangle.</p>
 
-    <p>Forty <code>O(N)</code> BFS passes is about 770,000 cell visits worst case, which is why dragging the goal feels instant. The clearance field depends only on the obstacles, so clicking a new endpoint reruns the search alone.</p>
+    <p>Forty <code>O(N)</code> BFS passes is about 770,000 cell visits worst case, so dragging the goal feels instant. The clearance field depends only on the obstacles, so clicking a new endpoint reruns the search alone.</p>
 
-    <h2>Dijkstra inside the corridor, and why not A*</h2>
+    <h2>Dijkstra in the corridor</h2>
 
-    <p>With <code>T*</code> known, the safe corridor is the set of cells with <code>clearance ≥ T*</code>, and the remaining job is the shortest route inside it. <code>shortestPath</code> runs Dijkstra on that masked sub-grid with 8-connectivity, weights 1 orthogonally and √2 diagonally, using a <code>std::priority_queue</code> with lazy deletion — stale entries are discarded by a <code>d &gt; dist[cur]</code> check rather than decrease-key. It stops as soon as the goal is popped, and the path is walked back through a predecessor array and reversed.</p>
+    <p>With <code>T*</code> known, the safe corridor is the set of cells with <code>clearance ≥ T*</code>, and the remaining job is the shortest route inside it. <code>shortestPath</code> runs Dijkstra on that masked sub-grid with 8-connectivity, weights 1 orthogonally and √2 diagonally, using a <code>std::priority_queue</code> with lazy deletion: stale entries are discarded by a <code>d &gt; dist[cur]</code> check rather than decrease-key. It stops as soon as the goal is popped, and the path is walked back through a predecessor array and reversed.</p>
 
-    <p>One detail: it is called with <code>T* − 0.01</code>, not <code>T*</code>. Bisection converges from below, but the corridor at exactly <code>T*</code> can be one cell wide and sensitive to the last float ulp; the relaxation guarantees the search sees the corridor BFS just certified as connected.</p>
+    <p>It is called with <code>T* − 0.01</code>, not <code>T*</code>. Bisection converges from below, and the corridor at exactly <code>T*</code> can be one cell wide and sensitive to the last float ulp. The relaxation guarantees the search sees the corridor BFS just certified as connected.</p>
 
     <figure>
       <img src="../assets/img/voronoi-dijkstra.png" alt="A grid with some blocked cells, a path from a green start to a red goal, and eight arrows leaving one cell.">
       <figcaption>The search inside the corridor: eight neighbours per cell, weight 1 orthogonally and √2 diagonally. Blocked cells are those below the clearance threshold.</figcaption>
     </figure>
 
-    <p>A* would be admissible here — straight-line Euclidean distance never overestimates the 8-connected cost — but it would not buy much. A replan is dominated by the clearance field and the 40 BFS passes, not by the one Dijkstra run, so halving the last stage moves the total by a few percent. And the corridor is exactly the case where a straight-line heuristic performs badly: a narrow winding channel around obstacles, where the heuristic points the search into walls, the frontier fans out anyway, and A* degenerates towards Dijkstra's expansion count. Dijkstra is fewer moving parts for the same answer.</p>
+    <p>A* would be admissible here, since straight-line Euclidean distance never overestimates the 8-connected cost, but it would not buy much. A replan is dominated by the clearance field and the 40 BFS passes rather than by the one Dijkstra run, so halving the last stage moves the total by a few percent. The corridor is also the case where a straight-line heuristic performs badly: a narrow winding channel around obstacles, where the heuristic points the search into walls, the frontier fans out anyway, and A* degenerates towards Dijkstra's expansion count. Dijkstra has fewer moving parts for the same answer.</p>
 
-    <h2>Complexity and what the grid costs you</h2>
+    <h2>Complexity and limitations</h2>
 
     <div class="table-wrap">
     <table>
@@ -121,17 +121,17 @@
 
     <p>Total <code>O(N·m + N log N)</code>. Moving the start or goal skips the first row entirely.</p>
 
-    <p>The limitations are all consequences of the grid, and they are worth stating rather than glossing:</p>
+    <p>The limitations all follow from the grid:</p>
 
     <ul>
-      <li><strong>The clearance field is sampled, not exact.</strong> Clearance is evaluated at cell centres only, so a cell's true minimum can be lower than the stored value by up to half a cell diagonal — about 4.2 px here. The reported <code>T*</code> is an estimate that can be optimistic by roughly that much; the fix is a finer grid, or subtracting that bound as a safety margin.</li>
-      <li><strong>It approximates the Voronoi diagram, it does not compute it.</strong> No parabolic arcs, no event queue, no degenerate-case handling. The ridges are wherever the sampled field happens to put them, and they move when the grid resolution changes.</li>
-      <li><strong>The path is not Euclidean-shortest.</strong> An 8-connected metric only represents directions in 45° increments, so a straight run at an intermediate angle becomes a staircase up to about 8% longer than the true segment. At 6 px cells this is visible in the drawn route.</li>
-      <li><strong>The route does not follow the medial axis everywhere.</strong> The textbook picture says the path runs along the Voronoi edges. That holds only in the tight passages, where the ridge is the only way through. Where the corridor is wide, Dijkstra cuts the corner and leaves the ridge — correctly, since the bottleneck constraint is already satisfied and only length remains. Right behaviour, but not the one the picture implies.</li>
+      <li><strong>The clearance field is sampled at cell centres.</strong> A cell's true minimum can therefore be lower than the stored value by up to half a cell diagonal, about 4.2 px here. The reported <code>T*</code> is an estimate that can be optimistic by roughly that much. A finer grid fixes it, as does subtracting that bound as a safety margin.</li>
+      <li><strong>The Voronoi diagram is approximated, never computed.</strong> No parabolic arcs, no event queue, no degenerate-case handling. The ridges are wherever the sampled field happens to put them, and they move when the grid resolution changes.</li>
+      <li><strong>The path is not Euclidean-shortest.</strong> An 8-connected metric represents directions in 45° increments only, so a straight run at an intermediate angle becomes a staircase up to about 8% longer than the true segment. At 6 px cells this is visible in the drawn route.</li>
+      <li><strong>The route does not follow the medial axis everywhere.</strong> The textbook picture has the path running along the Voronoi edges. That holds in the tight passages, where the ridge is the only way through. Where the corridor is wide, Dijkstra cuts the corner and leaves the ridge. That is correct behaviour, since the bottleneck constraint is already satisfied and only length remains, and it differs from what the picture implies.</li>
       <li><strong>The weights are in cell units, not pixels.</strong> Dijkstra's cost is never multiplied by the cell size. A uniform scale factor does not change which path wins, but the distance array should not be read as pixels.</li>
     </ul>
 
-    <p class="note">Controls: left click sets the start, right click sets the goal, R regenerates the obstacle set, Esc quits. Everything replans on each event; the field is only rebuilt on R.</p>
+    <p class="note">Controls: left click sets the start, right click sets the goal, R regenerates the obstacle set, Esc quits. Everything replans on each event; the field is rebuilt only on R.</p>
   </article>
 
   <nav class="work-footer-nav">

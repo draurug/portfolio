@@ -21,7 +21,7 @@
     <header class="work-head">
       <p class="work-kind">Coursework · Numerical methods</p>
       <h1>Interpolation, quadrature and ODEs in Octave</h1>
-      <p class="work-lede">Eight labs written from the definitions rather than from library calls — Vandermonde solves, three flavours of spline, least squares, adaptive Simpson and two ODE integrators. The most instructive result was not the one the assignment was fishing for.</p>
+      <p class="work-lede">Eight labs, each method written from its definition rather than called from a library: Vandermonde solves, three kinds of spline, mean-square and least-squares approximation, adaptive Simpson, and two ODE integrators. Every lab has a written report.</p>
       <dl class="work-meta">
         <div><dt>Year</dt><dd>2025</dd></div>
         <div><dt>Stack</dt><dd>GNU Octave · LaTeX</dd></div>
@@ -35,13 +35,13 @@
       </ul>
     </header>
 
-    <h2>Interpolation, and where it stops working</h2>
+    <h2>Interpolation</h2>
 
-    <p>The first lab interpolates <code>f(x) = ln(x)·sin(x)</code> on [0.5, 4] by solving a Vandermonde system for the polynomial coefficients — <code>A = vander(x); c = A \ y</code> — at degrees 3, 5, 10 and 50, once on a uniform grid and once on Chebyshev nodes <code>x_j = (a+b)/2 + (b−a)/2 · cos((2j+1)π / 2(n+1))</code>. The point of the exercise is the Runge phenomenon: uniform nodes are supposed to oscillate wildly near the interval ends as the degree grows, and Chebyshev nodes, clustered towards the ends, are supposed to fix it.</p>
+    <p>At n = 50, Chebyshev nodes give a worse interpolant than uniform nodes: maximum error 14.1 against 2.5, with a Vandermonde condition number of 1.5e44 against 4.0e43. That result is the opposite of what the assignment was set up to show.</p>
 
-    <p>That is not quite what happened, and the reason is worth more than the expected answer.</p>
+    <p>The first lab interpolates <code>f(x) = ln(x)·sin(x)</code> on [0.5, 4] by solving a Vandermonde system for the polynomial coefficients, <code>A = vander(x); c = A \ y</code>, at degrees 3, 5, 10 and 50, once on a uniform grid and once on Chebyshev nodes <code>x_j = (a+b)/2 + (b−a)/2 · cos((2j+1)π / 2(n+1))</code>. The exercise targets the Runge phenomenon: uniform nodes should oscillate wildly near the interval ends as the degree grows, and Chebyshev nodes, clustered towards the ends, should remove those oscillations.</p>
 
-    <p>At n = 3, 5 and 10 both grids track the function closely — this <code>f</code> is tame enough that ten uniform nodes already give a visually exact fit. At n = 50 the uniform-grid polynomial does break down, but into high-frequency jitter over the last half-unit of the interval, and the Chebyshev version breaks down in the same place and considerably worse, swinging to ±13 where the function stays inside [−1.1, 0.7]. Chebyshev nodes cannot be blamed for that, since they are the fix for that failure mode.</p>
+    <p>At n = 3, 5 and 10 both grids track the function closely. This <code>f</code> is tame enough that ten uniform nodes already give a visually exact fit, and at n = 10 the maximum errors are 1.8e-5 uniform and 9.9e-5 Chebyshev, which is ordinary behaviour. At n = 50 the uniform-grid polynomial does break down, into high-frequency jitter over the last half-unit of the interval. The Chebyshev version breaks down in the same place and considerably worse, swinging to ±13 where the function stays inside [−1.1, 0.7].</p>
 
     <div class="table-wrap">
     <table>
@@ -56,9 +56,9 @@
     </table>
     </div>
 
-    <blockquote><p>At n = 50 the matrix is numerically singular in double precision. What the plot shows is not the Runge phenomenon at all — it is rounding error in the coefficients, amplified by the monomial basis.</p></blockquote>
+    <blockquote><p>At n = 50 the matrix is numerically singular in double precision. The plots show rounding error in the coefficients, amplified by the monomial basis, rather than the Runge phenomenon.</p></blockquote>
 
-    <p>Chebyshev nodes control the <code>ω(x) = ∏(x − x_i)</code> factor in the interpolation error term, which is a statement about the mathematical polynomial. They say nothing about the conditioning of the linear system you solve to find that polynomial's coefficients in the basis 1, x, x², …, and that conditioning grows exponentially with degree regardless of node placement. Fixing it means changing basis — barycentric Lagrange, or an orthogonal-polynomial representation — not moving the nodes. Octave itself flags the n = 10 and n = 50 solves as rank-deficient, which is the most honest output of the lab.</p>
+    <p>Chebyshev nodes control the <code>ω(x) = ∏(x − x_i)</code> factor in the interpolation error term, which is a statement about the mathematical polynomial. They say nothing about the conditioning of the linear system solved to find that polynomial's coefficients in the basis 1, x, x², …, and that conditioning grows exponentially with degree regardless of node placement. Fixing it means changing basis, to barycentric Lagrange or an orthogonal-polynomial representation, rather than moving the nodes. Octave itself flags the n = 10 and n = 50 solves as rank-deficient.</p>
 
     <figure>
       <img src="../assets/img/nm-uniform-n50.png" alt="Degree-50 interpolant on a uniform grid: it tracks the function exactly until x is about 3.7, then breaks into rapid oscillation between roughly -1.6 and 1.5.">
@@ -67,14 +67,14 @@
 
     <figure>
       <img src="../assets/img/nm-chebyshev-n50.png" alt="Degree-50 interpolant on Chebyshev nodes: the same breakdown near the right end, but oscillating between roughly -5 and 13 on a much wider vertical scale.">
-      <figcaption>Chebyshev nodes, n = 50 — note the y-axis runs to 15. Better node placement, same basis, worse result.</figcaption>
+      <figcaption>Chebyshev nodes, n = 50, with the y-axis running to 15. Same basis, better node placement, larger error.</figcaption>
     </figure>
 
-    <p>The lab also compares the theoretical remainder bound <code>|R₃(x)| ≤ M₄/4! · |ω(x)|</code> against the error actually measured at the midpoints of a degree-3 fit. With <code>M₄ = max|f⁗| = 14.29</code> the bound comes out around 1.03 where the real error is 0.14 — pessimistic by roughly eight times, which is what you expect from a bound that takes the worst fourth derivative anywhere on the interval and pretends it applies everywhere.</p>
+    <p>The lab also compares the theoretical remainder bound <code>|R₃(x)| ≤ M₄/4! · |ω(x)|</code> against the error measured at the midpoints of a degree-3 fit. With <code>M₄ = max|f⁗| = 14.29</code> the bound comes out around 1.03 where the real error is 0.14, pessimistic by roughly eight times. The bound takes the worst fourth derivative anywhere on the interval and applies it everywhere.</p>
 
-    <h3>Splines, where the degree stays fixed</h3>
+    <h3>Splines</h3>
 
-    <p>The second lab is the answer to the first one's problem: keep the pieces low-degree and add more of them. Three interpolants are built by hand on <code>f(x) = 1/(1 + cos²x)</code> over [−π, π] — a global cubic spline with natural end conditions (assembled as a tridiagonal system in the second-derivative moments and solved directly), a linear Lagrange spline, and a cubic Hermite spline that additionally consumes the analytic derivative at each node.</p>
+    <p>The second lab keeps the pieces low-degree and adds more of them. Three interpolants are built by hand on <code>f(x) = 1/(1 + cos²x)</code> over [−π, π]: a global cubic spline with natural end conditions, assembled as a tridiagonal system in the second-derivative moments and solved directly; a linear Lagrange spline; and a cubic Hermite spline that additionally consumes the analytic derivative at each node.</p>
 
     <div class="table-wrap">
     <table>
@@ -89,27 +89,27 @@
     </table>
     </div>
 
-    <p>Nothing here diverges — refining the grid improves every method monotonically, which is the whole argument for splines over one high-degree polynomial. The Hermite spline wins throughout by about an order of magnitude, and it should: it is given twice as much information, the value <em>and</em> the slope at every node. At n = 3 and 5 the cubic spline is marginally worse than the linear one, because with so few knots the natural end conditions — zero curvature at ±π, where this function has none — cost more than the higher degree gains. By n = 10 the ordering is the expected one.</p>
+    <p>Nothing here diverges. Refining the grid improves every method monotonically, which is the whole argument for splines over one high-degree polynomial. The Hermite spline wins throughout by about an order of magnitude, as it should, since it is given twice as much information: the value and the slope at every node. At n = 3 and 5 the cubic spline is marginally worse than the linear one, because with so few knots the natural end conditions impose zero curvature at ±π, where this function has none, and that costs more than the higher degree gains. By n = 10 the ordering is the expected one.</p>
 
     <figure>
       <img src="../assets/img/nm-splines-n10.png" alt="Three splines through eleven nodes on a double-humped curve: the linear spline cuts the peaks flat, the cubic undershoots them slightly, the Hermite spline nearly coincides with the function.">
       <figcaption>Ten intervals. The linear spline chords straight across each hump; the Hermite spline is almost indistinguishable from <code>f</code>.</figcaption>
     </figure>
 
-    <h2>Approximation instead of interpolation</h2>
+    <h2>Approximation</h2>
 
-    <p>The next two labs drop the requirement of passing through the data. Lab 3 computes best mean-square approximations three ways: polynomials on [0, 1] via the normal equations, whose Gram matrix has entries <code>1/(i+j−1)</code> — the Hilbert matrix, the interpolation lab's conditioning problem in a different disguise; a truncated Chebyshev series on [−1, 1], its coefficients obtained by numerically integrating <code>f(x)·T_k(x)/√(1−x²)</code>; and an L²-projection onto linear splines, assembling the spline mass matrix and integrating the hat functions against <code>f</code> segment by segment.</p>
+    <p>The next two labs drop the requirement of passing through the data. Lab 3 computes best mean-square approximations three ways. Polynomials on [0, 1] via the normal equations, whose Gram matrix has entries <code>1/(i+j−1)</code> and is the Hilbert matrix, so the interpolation lab's conditioning problem reappears in a different form. A truncated Chebyshev series on [−1, 1], its coefficients obtained by numerically integrating <code>f(x)·T_k(x)/√(1−x²)</code>. And an L²-projection onto linear splines, assembling the spline mass matrix and integrating the hat functions against <code>f</code> segment by segment.</p>
 
-    <p>Lab 4 is ordinary least squares over eight sample points on [0, π/2], with polynomials of degree 2, 3 and 6 and with the nonlinear model <code>φ(x) = a₀·exp(a₁x)</code>. The nonlinear fit is handled by linearization — take logs, so <code>ln y = ln a₀ + a₁x</code> becomes a two-column linear system. That is the cheap standard trick and also a compromise, since it minimizes squared residuals in log space rather than in <code>y</code>. The fit is visibly imperfect for a second, larger reason: an exponential is monotone and convex, while the target function is S-shaped with an inflection, so no <code>a₀</code>, <code>a₁</code> can follow it.</p>
+    <p>Lab 4 is ordinary least squares over eight sample points on [0, π/2], with polynomials of degree 2, 3 and 6 and with the nonlinear model <code>φ(x) = a₀·exp(a₁x)</code>. The nonlinear fit is handled by linearization: take logs, so <code>ln y = ln a₀ + a₁x</code> becomes a two-column linear system. That is the cheap standard trick and also a compromise, since it minimizes squared residuals in log space rather than in <code>y</code>. The fit is visibly imperfect for a second and larger reason. An exponential is monotone and convex, while the target function is S-shaped with an inflection, so no <code>a₀</code>, <code>a₁</code> can follow it.</p>
 
     <figure>
       <img src="../assets/img/nm-nonlinear-lsq.png" alt="Eight data points on an S-shaped curve with an exponential fit drawn through them; the exponential runs above the curve on the left third and below it on the right third.">
-      <figcaption>The exponential model crosses the data twice and misses in between — a model-selection failure, not a fitting failure.</figcaption>
+      <figcaption>The exponential model crosses the data twice and misses in between. The model class is wrong, not the fitting procedure.</figcaption>
     </figure>
 
     <h2>Quadrature and ODEs</h2>
 
-    <p>Lab 5 integrates <code>atan(2x)/(x²+5)</code> on [0, 2] and <code>eˣ/(x³+3)</code> on [0, 1] with a pair of nested composite Simpson rules. The design is deliberate: the five-node rule's abscissae are a subset of the nine-node rule's, so one batch of nine function values yields both estimates, and their difference gives a Runge error estimate <code>|S₉ − S₅|/15</code> — the 15 being <code>2⁴ − 1</code> for a fourth-order method. When the local estimate exceeds the tolerance apportioned to the current subinterval, the interval is halved and the right half pushed on a stack; otherwise its contribution is accepted. Function evaluations are counted, which is the only cost that matters when <code>f</code> is expensive.</p>
+    <p>Lab 5 integrates <code>atan(2x)/(x²+5)</code> on [0, 2] and <code>eˣ/(x³+3)</code> on [0, 1] with a pair of nested composite Simpson rules. The five-node rule's abscissae are a subset of the nine-node rule's, so one batch of nine function values yields both estimates, and their difference gives a Runge error estimate <code>|S₉ − S₅|/15</code>, the 15 being <code>2⁴ − 1</code> for a fourth-order method. When the local estimate exceeds the tolerance apportioned to the current subinterval, the interval is halved and the right half pushed on a stack. Otherwise its contribution is accepted. Function evaluations are counted, since that is the only cost that matters when <code>f</code> is expensive.</p>
 
     <div class="table-wrap">
       <table>
@@ -124,11 +124,11 @@
       </table>
     </div>
 
-    <p>Integral B is the interesting row: one pass of the nine-node rule already lands within 8e-7, so tightening the tolerance by three orders of magnitude costs nothing — no subdivision is triggered at all. Integral A, over a longer interval with more curvature near zero, takes seven subintervals' worth of work for the same target.</p>
+    <p>Integral B costs 9 evaluations at both tolerances. One pass of the nine-node rule already lands within 8e-7, so tightening the tolerance by three orders of magnitude triggers no subdivision at all. Integral A runs over a longer interval with more curvature near zero and spends 63 evaluations, about seven subintervals' worth of work, for the same target.</p>
 
-    <p>Labs 6 and 7 solve the same initial value problem, <code>y' = x²·cos(0.5y) + 1</code>, <code>y(0) = 1</code> on [0, 1]. Lab 6 uses Heun's method (explicit Runge–Kutta of order 2) and picks the step automatically: integrate on n intervals, again on 2n, compare at the shared nodes and take <code>max|y_2n − y_n|/3</code> as the Runge estimate — divisor <code>2² − 1</code> for a second-order method — doubling until it falls below 1e-6. It settles at n = 256, estimated error 8.7e-7 against an actual discrepancy from <code>ode45</code> of 4.9e-7, so the estimator is honest to within a factor of two.</p>
+    <p>Labs 6 and 7 solve the same initial value problem, <code>y' = x²·cos(0.5y) + 1</code>, <code>y(0) = 1</code> on [0, 1]. Lab 6 uses Heun's method, explicit Runge–Kutta of order 2, and picks the step automatically: integrate on n intervals, again on 2n, compare at the shared nodes and take <code>max|y_2n − y_n|/3</code> as the Runge estimate, the divisor being <code>2² − 1</code> for a second-order method, doubling until it falls below 1e-6. It settles at n = 256, estimated error 8.7e-7 against an actual discrepancy from <code>ode45</code> of 4.9e-7, so the estimator is accurate to within a factor of two.</p>
 
-    <p>Lab 7 replaces the one-step method with two-step Adams schemes, both started from a single Heun step. The explicit AB2 formula and the implicit AM2 formula, the latter run as a predictor–corrector pair — AB2 predicts <code>y_p</code>, AM2 corrects using <code>f(x_i, y_p)</code> — are compared against <code>ode45</code> at n = 4, 8 and 16:</p>
+    <p>Lab 7 replaces the one-step method with two-step Adams schemes, both started from a single Heun step. The explicit AB2 formula and the implicit AM2 formula, the latter run as a predictor–corrector pair in which AB2 predicts <code>y_p</code> and AM2 corrects using <code>f(x_i, y_p)</code>, are compared against <code>ode45</code> at n = 4, 8 and 16:</p>
 
     <div class="table-wrap">
       <table>
@@ -142,11 +142,11 @@
       </table>
     </div>
 
-    <p>AB2's error falls by a factor of about 4.05 each time the step is halved, which is the second-order convergence the theory predicts, measured rather than asserted. The corrector step buys roughly fifty times the accuracy at four evaluations per step instead of two — cheap, on this problem.</p>
+    <p>AB2's error falls by a factor of about 4.05 each time the step is halved, which is the second-order convergence the theory predicts, measured rather than asserted. The corrector step buys roughly fifty times the accuracy at four evaluations per step instead of two, which is cheap on this problem.</p>
 
     <p>The final assignment is a nine-task summary paper covering the whole course on small hand-checkable problems: Lagrange and Newton divided-difference interpolation with the remainder bound, a Hermite polynomial fitted through prescribed values and derivatives, finite-difference tables, difference formulas for the derivative checked against exact values, a three-node cubic spline, mean-square and least-squares fits, and Runge estimates for three quadrature rules on tabulated data.</p>
 
-    <p class="note">This is coursework for a numerical methods course: variant-numbered problems, Octave scripts, LaTeX reports. Every method is implemented from its definition — the only library routines used are <code>quad</code>/<code>quadgk</code> and <code>ode45</code>, and those only to produce reference values to check the hand-written code against.</p>
+    <p class="note">This is coursework for a numerical methods course: variant-numbered problems, Octave scripts, LaTeX reports. Every method is implemented from its definition. The only library routines used are <code>quad</code>/<code>quadgk</code> and <code>ode45</code>, and those only to produce reference values for checking the hand-written code.</p>
   </article>
 
   <nav class="work-footer-nav">
