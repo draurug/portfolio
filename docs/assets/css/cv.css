@@ -498,3 +498,51 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   blockquote { color: #000; border-top: 1pt solid #000; font-size: 11pt; padding-top: 0.3em; }
   .note { background: none; border-left: 1pt solid #000; font-size: 8.5pt; padding: 0 0 0 0.6em; }
 }
+
+/* --- Intro block: portrait beside the name ----------------- */
+.intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.portrait {
+  width: 104px;
+  height: 104px;
+  object-fit: cover;
+  filter: grayscale(1);
+  border: 2px solid var(--rule-strong);
+  flex: 0 0 auto;
+}
+.intro-text { min-width: 0; }
+.cv-head h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2.6rem;
+  line-height: 0.98;
+}
+@media (min-width: 46em) {
+  .portrait { width: 128px; height: 128px; }
+  .cv-head h1 { font-size: 3.6rem; }
+}
+.intro-role {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+@media print {
+  .intro { gap: 0.8rem 1.25rem; margin-bottom: 1rem; page-break-inside: avoid; }
+  .portrait {
+    width: 84px;
+    height: 84px;
+    border: 1px solid #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cv-head h1 { font-size: 2.1rem; }
+}

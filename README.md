@@ -7,7 +7,9 @@ docs/
   index.html          list of work
   cv.html             CV, with print styles for the PDF
   work/*.html         one page per project
-  assets/css|img|pdf
+  assets/css/style.css   index and work pages (Swiss grid)
+  assets/css/cv.css      CV only (editorial)
+  assets/img|pdf
   data/projects.json  data reference for the work list (the HTML is hand-written)
 ```
 
@@ -19,16 +21,12 @@ python3 -m http.server -d docs 8000
 
 ## Deploy
 
-Cloudflare Pages, connected to this repository:
-
-- Build command: *(empty)*
-- Build output directory: `docs`
+GitHub Pages, serving the `docs/` folder from the `main` branch. Pushing to `main` deploys.
 
 ## Regenerating the CV PDF
 
 ```bash
-chromium --headless --print-to-pdf=docs/assets/pdf/Uliana-Hrab-CV.pdf \
-         --no-pdf-header-footer http://localhost:8000/cv.html
+cd docs && python3 -m weasyprint cv.html assets/pdf/Uliana-Hrab-CV.pdf
 ```
 
 ## Note on `work/`
