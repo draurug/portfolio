@@ -52,10 +52,10 @@
     "title": "Computational Geometry in OpenGL",
     "year": "2026",
     "kind": "Coursework · Graphics",
-    "summary": "Five OpenGL programs working up from a shaded triangle to real geometry: Bresenham against Xiaolin Wu line rasterization side by side, segment intersection by orientation test, Graham scan convex hull, and ear-clipping polygon triangulation.",
+    "summary": "Seven OpenGL programs across five labs, working up from a shaded triangle to real geometry: Bresenham against Xiaolin Wu line rasterization side by side, segment intersection by orientation test, Graham scan convex hull, and ear-clipping polygon triangulation.",
     "stack": ["C++", "OpenGL", "GLEW", "FreeGLUT"],
     "metrics": [
-      { "value": "5", "label": "programs" },
+      { "value": "7", "label": "programs" },
       { "value": "~1k", "label": "lines of C++" }
     ],
     "repo": "https://github.com/draurug/opengl-geometry-labs",
