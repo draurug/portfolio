@@ -19,12 +19,9 @@
 <main class="page page--index">
   <section class="hero">
     <h1>Applied mathematics, machine learning and C++.</h1>
-    <p>I am an applied mathematics student in Norway. Most of what I know I learned by
-    building things and then finding out what was wrong with them — a fraud classifier whose
-    first validation split leaked, a path planner that had to be taught that the shortest route
-    is not the safest one, a crossword engine that had to stop sending the answers to the
-    browser.</p>
-    <p>Everything below is my own work, with the full write-up and the code behind each one.</p>
+    <p>I am an applied mathematics student in Norway. I work mostly on machine learning,
+    computational geometry and C++ desktop software.</p>
+    <p>Below are eight projects. Each one links to a write-up and to the source.</p>
   </section>
 
   <section class="work-list">
@@ -37,9 +34,9 @@
       </div>
       <p class="work-kind">Course paper · Machine learning</p>
       <p>Binary classification of Ethereum addresses from 50 transaction-derived features.
-      LightGBM reaches F1 0.987 on held-out data — but the part worth reading is what it took
-      to believe that number: a naive random split was leaking 5.7% of the test set through
-      duplicate feature profiles.</p>
+      LightGBM reaches F1 0.987 on held-out data. That number only meant something after I
+      found the leak behind it: a naive random split was putting 5.7% of the test set into
+      training through duplicate feature profiles.</p>
       <p class="work-stack">Python · scikit-learn · LightGBM · XGBoost · pandas · pytest</p>
       <p class="work-links"><a href="work/ethereum-fraud-detection.html">Read</a> · <a href="https://github.com/draurug/ethereum-fraud-detection">Code</a></p>
     </article>
@@ -50,9 +47,9 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Product · Full-stack TypeScript</p>
-      <p>A crossword site built on one observation: the theme belongs to the clue, not to the
-      word. ТРАМВАЙ is an ordinary word — "the transport that beheaded Berlioz" is what makes it
-      belong to <em>The Master and Margarita</em>. Four themed packs, twelve puzzles live today.</p>
+      <p>A crossword site. The theme of a puzzle is carried by its clues. ТРАМВАЙ is an
+      ordinary word, and the clue "the transport that beheaded Berlioz" is what ties it to
+      <em>The Master and Margarita</em>. Four themed packs, twelve puzzles live today.</p>
       <p class="work-stack">Next.js 15 · React 19 · TypeScript · Tailwind · Vitest · Cloudflare Workers</p>
       <p class="work-links"><a href="work/crossw.html">Read</a> · <a href="https://crossw.draugur3-14.workers.dev">Play</a> · <a href="https://github.com/draurug/CrossW">Code</a></p>
     </article>
@@ -63,10 +60,9 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Course project · Computational geometry</p>
-      <p>A robot with physical width does not want the shortest path, it wants the one that
-      keeps the most room on either side. This planner builds a clearance field, binary-searches
-      the largest clearance that still connects start to goal, and runs Dijkstra inside that
-      corridor.</p>
+      <p>A path planner for a robot with physical width, where clearance matters more than
+      distance. It builds a clearance field and binary-searches the largest clearance that
+      still connects start to goal. Dijkstra then runs inside that corridor.</p>
       <p class="work-stack">C++ · FreeGLUT · Python · NumPy · SciPy · matplotlib</p>
       <p class="work-links"><a href="work/voronoi-path-planner.html">Read</a> · <a href="https://github.com/draurug/voronoi-path-planner">Code</a></p>
     </article>
@@ -77,10 +73,10 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Desktop · Systems</p>
-      <p>A Qt client for a multiplayer game server: the player list, the invitation handshake
-      with accept and decline, and keeping two clients agreeing on whose turn it is. The
-      Boost.Asio transport underneath is a third-party course library, not mine — the write-up
-      says which parts are which.</p>
+      <p>A Qt client for a multiplayer game server. I wrote the player list, the invitation
+      handshake with accept and decline, and the turn synchronisation that keeps two clients
+      agreeing on whose turn it is. The Boost.Asio transport underneath is a third-party
+      course library. The write-up says which parts are which.</p>
       <p class="work-stack">C++20 · Qt · CMake</p>
       <p class="work-links"><a href="work/tictactoe.html">Read</a> · <a href="https://github.com/draurug/TicTacToe">Code</a></p>
     </article>
@@ -91,9 +87,9 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Coursework · Graphics</p>
-      <p>Five labs, seven programs, working up from a shaded triangle to real geometry: Bresenham against
-      Xiaolin Wu rasterization side by side, segment intersection by orientation test, Graham
-      scan convex hulls and ear-clipping triangulation.</p>
+      <p>Five labs, seven programs. They start at a shaded triangle and work up to Bresenham
+      and Xiaolin Wu rasterization side by side, segment intersection by orientation test,
+      Graham scan convex hulls and ear-clipping triangulation.</p>
       <p class="work-stack">C++ · OpenGL · GLEW · FreeGLUT</p>
       <p class="work-links"><a href="work/opengl-geometry-labs.html">Read</a> · <a href="https://github.com/draurug/opengl-geometry-labs">Code</a></p>
     </article>
@@ -104,10 +100,10 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Coursework · Computational mathematics</p>
-      <p>Eight labs in Octave, each with its own figures: interpolation on uniform against
-      Chebyshev nodes — where the plots turn out to be showing the conditioning of the monomial
-      basis rather than the Runge phenomenon everyone expects; splines; least squares; Simpson
-      with Runge error control; Runge–Kutta and Adams.</p>
+      <p>Eight labs in Octave, each with its own figures: interpolation on uniform and
+      Chebyshev nodes, splines, least squares, Simpson with Runge error control, Runge–Kutta
+      and Adams. The interpolation plots show the conditioning of the monomial basis more
+      than they show the Runge phenomenon they are usually read for.</p>
       <p class="work-stack">Octave · MATLAB · LaTeX</p>
       <p class="work-links"><a href="work/numerical-methods.html">Read</a> · <a href="https://github.com/draurug/numerical-methods-octave">Code</a></p>
     </article>
@@ -118,8 +114,9 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Desktop · C++</p>
-      <p>Qt Widgets, with the rules kept strictly out of the interface: the domain classes know
-      nothing about widgets and the widget only paints. Builds on Qt6; the Qt5 fallback in the CMake file is written but has not been compiled.</p>
+      <p>Qt Widgets, with the rules kept out of the interface. The domain classes include no
+      Qt headers and the widget only paints. Builds on Qt6; the Qt5 fallback in the CMake file
+      is written but has not been compiled.</p>
       <p class="work-stack">C++17 · Qt6 · Qt5 · CMake</p>
       <p class="work-links"><a href="work/battleship.html">Read</a> · <a href="https://github.com/draurug/qt-battleship">Code</a></p>
     </article>
@@ -130,9 +127,9 @@
         <span class="cv-date">2026</span>
       </div>
       <p class="work-kind">Academic writing</p>
-      <p>Two papers for a blockchain technology course: where blockchain and machine learning
-      actually meet rather than where the marketing says they do, and bin packing as an
-      NP-complete problem with the approximations that make it usable.</p>
+      <p>Two papers for a blockchain technology course. The first looks at where blockchain and
+      machine learning actually meet, against the claims made for them. The second covers bin
+      packing as an NP-complete problem and the approximations that make it usable.</p>
       <p class="work-stack">LaTeX · Beamer</p>
       <p class="work-links"><a href="work/blockchain-papers.html">Read</a> · <a href="https://github.com/draurug/blockchain-papers">Code</a></p>
     </article>
