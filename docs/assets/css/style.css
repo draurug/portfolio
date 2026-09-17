@@ -6,7 +6,10 @@
    ============================================================ */
 
 :root {
-  --sans: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Helvetica, "Liberation Sans", Arial, sans-serif;
+  --display: "Helvetica Neue Condensed", "HelveticaNeue-CondensedBold", "Avenir Next Condensed",
+             "Arial Narrow", "Liberation Sans Narrow", "Nimbus Sans Narrow", "DejaVu Sans Condensed",
+             "Roboto Condensed", ui-sans-serif, system-ui, Helvetica, Arial, sans-serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Noto Sans", "Liberation Sans", Helvetica, Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
   --paper: #ffffff;
@@ -18,8 +21,8 @@
   --accent: #d81e05;       /* white on it: 5.1:1 — used as a block, not as text */
   --accent-ink: #ffffff;
 
-  --gutter: 1.25rem;
-  --measure: 66ch;
+  --gutter: 1.15rem;
+  --measure: 60ch;
   --step: 1.4rem;
 }
 
@@ -76,6 +79,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* --- Typography: tight leading, flush left ----------------- */
 h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-stretch: 85%;
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.021em;
@@ -185,12 +190,12 @@ dd { margin: 0.2rem 0 0.9rem; }
 .page {
   flex: 1 0 auto;
   width: 100%;
-  max-width: 64rem;
+  max-width: 62rem;
   margin: 0 auto;
-  padding: 2.5rem var(--gutter) 5rem;
+  padding: 2.25rem var(--gutter) 4.5rem;
 }
-@media (min-width: 46em) { :root { --gutter: 2.5rem; } .page { padding-top: 4.5rem; } }
-.page--work, .page--cv { max-width: 58rem; }
+@media (min-width: 46em) { :root { --gutter: 2.25rem; } .page { padding-top: 3.25rem; } }
+.page--work, .page--cv { max-width: 62rem; }
 
 /* --- Header: a ruled bar ----------------------------------- */
 .site-header {
@@ -204,7 +209,9 @@ dd { margin: 0.2rem 0 0.9rem; }
   background: var(--paper);
 }
 .site-name {
-  font-size: 0.82rem;
+  font-family: var(--display);
+  font-stretch: 85%;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -252,7 +259,7 @@ dd { margin: 0.2rem 0 0.9rem; }
   padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--rule-strong);
 }
-.hero p { max-width: 58ch; }
+.hero p { max-width: none; }
 .hero:first-child p { font-size: 1.05rem; color: var(--ink-mid); }
 .hero p:last-child { margin-bottom: 0; }
 
@@ -597,9 +604,62 @@ dd { margin: 0.2rem 0 0.9rem; }
 }
 .intro-role {
   margin: 0;
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 0.74rem;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* --- Header and intro: same treatment as the CV page ------- */
+.site-header {
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  padding: 0.85rem var(--gutter) 0.7rem;
+  border-bottom: 3px solid var(--rule-strong);
+}
+.site-name {
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.site-name:hover { color: var(--accent); }
+.site-nav { gap: 1.25rem; }
+.site-nav a {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-mid);
+  padding: 0;
+  border: 0;
 }
+.site-nav a:hover { color: var(--accent); border: 0; }
+.site-nav a[aria-current="page"] {
+  background: none;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2px;
+}
+
+.intro { gap: 1rem 1.75rem; margin-bottom: 1.5rem; }
+.portrait {
+  width: 104px;
+  height: 104px;
+  border: 2px solid var(--rule-strong);
+  filter: none;
+}
+.hero .intro h1 { font-size: 2.6rem; line-height: 0.98; margin: 0 0 0.5rem; }
+@media (min-width: 46em) {
+  .portrait { width: 128px; height: 128px; }
+  .hero .intro h1 { font-size: 3.6rem; }
+}
+.hero:first-child .intro-role, .hero .intro .intro-role {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.hero:first-child > p:first-of-type { font-size: 1.2rem; line-height: 1.45; color: var(--ink); }
