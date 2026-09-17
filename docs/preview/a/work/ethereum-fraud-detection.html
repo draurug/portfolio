@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ethereum Fraud Detection — Uliana Hrab</title>
+<meta name="description" content="Binary classification of Ethereum addresses from 50 transaction-derived features, and the duplicate-row leak that a naive random split would have hidden.">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../index.html">Work</a>
+    <a href="../cv.html">CV</a>
+  </nav>
+</header>
+
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Course paper · Machine learning</p>
+      <h1>Ethereum fraud detection, and the 5.7% of the test set I nearly leaked</h1>
+      <p class="work-lede">Classifying Ethereum addresses as fraudulent or legitimate from 50 transaction-derived features. The models come out near-perfect, which is exactly why most of the work went into checking whether the numbers meant anything — and one check found a random split that put exact copies of 112 test rows into training.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2026</dd></div>
+        <div><dt>Stack</dt><dd>Python · scikit-learn · LightGBM · XGBoost · pandas · pytest</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/ethereum-fraud-detection">GitHub</a></dd></div>
+        <div><dt>Paper</dt><dd><a href="../assets/pdf/Ethereum-Fraud-Detection-paper.pdf">Full paper, PDF</a></dd></div>
+      </dl>
+      <ul class="metrics">
+        <li><span class="metric-value">0.987</span><span class="metric-label">F1, held-out test</span></li>
+        <li><span class="metric-value">5.7%</span><span class="metric-label">of test rows leaked by a naive split</span></li>
+        <li><span class="metric-value">0%</span><span class="metric-label">after the group-aware split</span></li>
+      </ul>
+    </header>
+
+    <h2>The problem and the data</h2>
+
+    <p>Every Ethereum account is identified by an address, and every transaction it has ever made is public. That makes it possible to describe an address purely by its behaviour: how many transactions it sent and received, how much ether moved, how long it stayed active, how many distinct counterparties it dealt with, whether it ever touched ERC20 tokens. If fraudulent addresses behave differently from ordinary ones — and phishing wallets, Ponzi payouts and laundering hops do behave differently — then a classifier over those features should be able to separate them.</p>
+
+    <p>The dataset is the public Kaggle set built from real network addresses: 9,841 accounts, 50 numeric features each, one binary target <code>FLAG</code>. About 22% of the addresses are labelled fraud. That is imbalanced, but not the 1-in-10,000 imbalance of card-fraud problems; it is the kind of imbalance where accuracy is useless and PR-AUC is still well-behaved.</p>
+
+    <figure>
+      <img src="../assets/img/fraud-class_balance.png" alt="Bar chart of class counts: about 7,662 legitimate addresses against about 2,179 fraudulent ones.">
+      <figcaption>78/22 split between legitimate and fraudulent addresses. Always guessing "legitimate" scores 78% accuracy, which is why accuracy never appears in the results below.</figcaption>
+    </figure>
+
+    <p>The work is five sequential notebooks — EDA, preprocessing, feature engineering, modelling, evaluation — with all shared logic in one <code>helpers.py</code> that the notebooks and the pytest suite both import.</p>
+
+    <h2>What the EDA turned up</h2>
+
+    <p>Three findings mattered.</p>
+
+    <p><strong>Zero inflation.</strong> 21 of the 50 columns are more than half zeros. These are mostly features that simply do not apply to a given address — an account that never interacted with an ERC20 token has no ERC20 statistics, and "no ERC20 activity" is encoded identically to "zero ERC20 volume". A zero that means <em>not applicable</em> is different from a zero that means <em>a real zero</em>, so I added explicit boolean flags for the applicable/not-applicable distinction rather than leaving the model to infer it from a wall of zeros.</p>
+
+    <p><strong>Duplicate columns.</strong> 21 pairs of columns are bit-for-bit identical in the source CSV, mostly in the <code>erc20_avg_time_between_*</code> and <code>erc20_*_val_sent_contract</code> families, all of them all-zero across every row. This is an upstream data-quality problem, not leakage: the duplication is between features, not between a feature and the target. I kept them — trees are indifferent to redundant columns, and the only real cost is feature importance spread across the copies. For production I would drop them; the cleanup sits commented-out in notebook 02.</p>
+
+    <figure>
+      <img src="../assets/img/fraud-correlation_heatmap.png" alt="Correlation heat map over all features, showing blocks of strongly correlated columns along the diagonal.">
+      <figcaption>Feature correlations. The bright blocks are the families that move together — transaction counters with each other, ERC20 statistics with each other. Nothing correlates with the target above 0.95, so there is no single feature that gives the answer away.</figcaption>
+    </figure>
+
+    <p><strong>The classes really do separate.</strong> Ranking features by |median(fraud) − median(legit)| / std puts the time span between first and last transaction on top, followed by the transaction counters, <code>sent_tnx</code>, <code>received_tnx</code>, <code>unique_sent_to_addresses</code> and <code>total_ether_received</code>. The picture is consistent: a fraudulent address has a median lifetime of 5 days against 81 for a legitimate one, makes 5 transactions against 11, deals with 1 unique recipient against 2, and receives 1.68 ether against 71.72. Short-lived, low-volume, narrow counterparty set.</p>
+
+    <figure>
+      <img src="../assets/img/fraud-fraud_vs_normal_transaction_counts.png" alt="Box plots comparing transaction-count features between fraudulent and legitimate addresses; fraudulent distributions sit visibly lower.">
+      <figcaption>Transaction counts by class. The separation is visible before any model is fitted, which is a useful thing to know before the model starts reporting 0.99.</figcaption>
+    </figure>
+
+    <h2>Feature engineering and the preprocessing pipeline</h2>
+
+    <p>Notebook 02 normalises column names, drops the identifier columns (index and address), and coerces the two categorical token-name columns to proper objects with real <code>NaN</code>s. Notebook 03 adds four groups of derived features: <code>log1p</code> transforms of the six heavy-tailed monetary columns, send/receive ratios and net ether flow, the boolean activity flags, and aggregates such as total unique counterparties.</p>
+
+    <p>Preprocessing is a single <code>ColumnTransformer</code>: median imputation plus standard scaling for numerics, most-frequent imputation plus one-hot encoding for the two categoricals. It is fitted on the training split only, saved to disk, and reloaded unchanged in notebooks 04 and 05. Fitting it on the full frame would push test-set medians and scaling constants into training — a quiet form of leakage that inflates nothing dramatically but is entirely avoidable.</p>
+
+    <h2>The leak</h2>
+
+    <p>Notebook 02 deliberately does <em>not</em> call <code>drop_duplicates()</code>, and that decision is the reason the rest of this section exists.</p>
+
+    <p>Once the <code>address</code> column is gone, 574 rows in the dataset have an identical feature profile. They collapse into just 28 distinct profiles, and about 92% of them are fraud. The explanation is mundane: these are fraud addresses with almost no activity. An address that received one transaction and did nothing else produces the same 50-number vector as any other address that did the same. They are genuinely different addresses with genuinely the same features.</p>
+
+    <p>So dropping them would throw away real labelled examples of the minority class. Keeping them, on the other hand, breaks the split. Under a plain stratified random split, exact copies of one profile land on both sides, and the model gets evaluated on rows it memorised during training. I measured it in notebook 01 rather than reasoning about it:</p>
+
+    <blockquote><p>Under a random stratified split, 112 of 1,969 test rows — 5.7% — had an exact copy in train. Almost all of them were fraud.</p></blockquote>
+
+    <p>5.7% of the test set, concentrated in the class the metrics are most sensitive to. A tree only has to recognise those rows to score them correctly, and there is nothing in a standard metrics report that would tell you it was happening.</p>
+
+    <p>The fix is a group-aware split (<code>grouped_stratified_split</code> in <code>helpers.py</code>). Hash each row's feature vector, factorise the hashes into group ids, and hand those ids to <code>StratifiedGroupKFold</code>: identical profiles are forced onto the same side of the split while the 78/22 class ratio is preserved on both. After that, <strong>0 test rows have a copy in train</strong>.</p>
+
+    <p>What I expected was for the tree metrics to drop once the free rows were taken away. They did not. PR-AUC stayed around 0.999 either side of the change. The contamination was not what was producing the high numbers; the features separate the classes on their own. Fixing the split still earned its place, because the alternative is reporting 0.999 while privately wondering how much of it was memorisation.</p>
+
+    <p class="note">One honest caveat: the before and after test sets are not the same rows, so this is a sanity check rather than a controlled experiment. A cleaner design would fix the test set and vary only what the model saw in training. The conclusion — no large drop — is robust enough for the purpose it served.</p>
+
+    <h2>Choosing the model</h2>
+
+    <p>Four models, all imbalance-aware: logistic regression and random forest with <code>class_weight='balanced'</code>, XGBoost with <code>scale_pos_weight=3.5</code>, LightGBM with <code>is_unbalance=True</code>. The logistic regression is a baseline, not a contender. Selection happens in notebook 04 on stratified 5-fold cross-validated PR-AUC over the training split, and the choice is written to <code>reports/cv_results.json</code> before the test set is touched at all.</p>
+
+    <div class="table-wrap">
+    <table>
+      <caption>Cross-validated PR-AUC on the training split (5-fold). This is what selects the model.</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col">PR-AUC, mean</th><th scope="col">std</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Logistic regression</th><td>0.9134</td><td>0.0162</td></tr>
+        <tr><th scope="row">Random forest</th><td>0.9951</td><td>0.0014</td></tr>
+        <tr><th scope="row">XGBoost</th><td>0.9958</td><td>0.0020</td></tr>
+        <tr><th scope="row">LightGBM</th><td>0.9959</td><td>0.0019</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The three tree models are separated by less than 0.001 — well inside their own fold-to-fold standard deviations. They are, for practical purposes, the same model. LightGBM wins and gets copied to <code>models/best_model.joblib</code>, but the honest statement is that on a different seed any of the three could come first, and a real decision between them would come down to training time, model size or explainability rather than this ranking.</p>
+
+    <p>That is also the argument for selecting on CV rather than on test scores: picking the model with the best test number, when the candidates differ by less than the noise, is just picking whichever one got lucky on that particular 1,969 rows.</p>
+
+    <h2>Results</h2>
+
+    <p>The test set is used once, to confirm the choice already made.</p>
+
+    <div class="table-wrap">
+    <table>
+      <caption>Held-out test set (1,969 rows, group-aware split). LightGBM was selected by cross-validation, before these numbers existed.</caption>
+      <thead><tr><th scope="col">Model</th><th scope="col">Precision</th><th scope="col">Recall</th><th scope="col">F1</th><th scope="col">ROC-AUC</th><th scope="col">PR-AUC</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Logistic regression</th><td>0.7193</td><td>0.9404</td><td>0.8151</td><td>0.9817</td><td>0.9467</td></tr>
+        <tr><th scope="row">Random forest</th><td>0.9795</td><td>0.9862</td><td>0.9829</td><td>0.9996</td><td>0.9987</td></tr>
+        <tr><th scope="row">XGBoost</th><td>0.9817</td><td>0.9862</td><td>0.9840</td><td>0.9998</td><td>0.9992</td></tr>
+        <tr><th scope="row">LightGBM</th><td>0.9863</td><td>0.9885</td><td>0.9874</td><td>0.9998</td><td>0.9994</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <figure>
+      <img src="../assets/img/fraud-pr_curves.png" alt="Precision-recall curves for the four models; the three tree models hug the top-right corner while logistic regression falls away.">
+      <figcaption>Precision–recall curves. The three tree curves are indistinguishable in the corner; logistic regression is the one visibly below them. PR-AUC is the headline metric here because its random baseline is the positive-class share (0.22), while ROC-AUC's is always 0.5 — and with 78% negatives, ROC-AUC flatters everything.</figcaption>
+    </figure>
+
+    <p>Logistic regression is the interesting failure. It catches 94% of fraud but is wrong 28% of the time it raises a flag — <code>class_weight='balanced'</code> pushing it hard toward positives, and a linear boundary unable to express what the trees find. The gap between 0.947 and 0.999 PR-AUC is the size of the non-linear structure in this data.</p>
+
+    <figure>
+      <img src="../assets/img/fraud-confusion_matrix_lightgbm.png" alt="Confusion matrix for LightGBM on the test set, with a small number of false negatives and false positives.">
+      <figcaption>LightGBM on the test set. Recall 0.989 means roughly 5 missed fraud addresses out of about 435. In a real monitoring pipeline that miss count, not the F1, is the number people watch.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="../assets/img/fraud-feature_importance.png" alt="Horizontal bar chart of the twenty most important LightGBM features, led by the activity time span and transaction counters.">
+      <figcaption>Top-20 features of the selected model. They are the same ones the EDA flagged: activity time span, transaction counters, unique-counterparty counts. Agreement between a pre-model ranking and a post-model one is weak evidence, but it is the kind of weak evidence worth having.</figcaption>
+    </figure>
+
+    <h2>What these numbers do and do not prove</h2>
+
+    <p>An F1 of 0.987 on 1,969 rows of tabular data is not a claim that fraud on Ethereum is solved. It is a claim about one snapshot of one labelled dataset. The labels came from somewhere — addresses reported and confirmed as fraudulent — and reported fraud is a biased sample of fraud: the crude, short-lived, obviously anomalous kind is the kind that gets reported and is also the kind these features describe best. A fraudster who deliberately mimics normal traffic volumes over months would not look like the 22% in this file, and nothing here measures how such an address would be scored.</p>
+
+    <p>Nor does the group-aware split fully solve leakage. It removes exact duplicate profiles; near-duplicates — addresses from the same campaign, funded from the same source, with almost but not quite the same statistics — would still cross the split, and I did not measure them. That needs clustering by similarity rather than hashing by equality, plus a judgement call about the threshold.</p>
+
+    <p>What the numbers do support: the features carry real signal that is not an artifact of contaminated evaluation, and the three gradient-boosted / bagged tree models extract it equally well. That is a narrower claim than 0.987 makes it sound, and it is the one the pipeline actually established.</p>
+
+    <h2>What I would do next</h2>
+
+    <ul>
+      <li>Tune XGBoost and LightGBM properly with RandomizedSearchCV or Optuna. Everything here is at default-ish hyperparameters; a small lift is plausible, though not a large one from 0.999.</li>
+      <li>Move the decision threshold off 0.5. It is only the right threshold if a missed fraud address and a false accusation cost the same, which they do not.</li>
+      <li>Add SHAP on top of the global feature importance, so an individual flag can be explained to whoever has to act on it.</li>
+      <li>Measure near-duplicate leakage, not just exact-duplicate leakage.</li>
+    </ul>
+
+    <p>The course paper, the five notebooks, <code>helpers.py</code> and its tests are all in the repository.</p>
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="../index.html">← All work</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

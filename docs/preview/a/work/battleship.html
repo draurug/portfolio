@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battleship in Qt Widgets — Uliana Hrab</title>
+<meta name="description" content="A desktop Battleship game where the rules compile without Qt and the widgets only paint.">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../index.html">Work</a>
+    <a href="../cv.html">CV</a>
+  </nav>
+</header>
+
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Personal project · Desktop C++</p>
+      <h1>Battleship, with the rules kept out of the UI</h1>
+      <p class="work-lede">A Qt Widgets Battleship game against a simple computer opponent. The point of the exercise was the seam: the game rules are 456 lines that do not include a single Qt header, and the widgets hold no copy of the board.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2025</dd></div>
+        <div><dt>Stack</dt><dd>C++17 · Qt5/Qt6 Widgets · CMake</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/qt-battleship">GitHub</a></dd></div>
+      </dl>
+      <ul class="metrics">
+        <li><span class="metric-value">1052</span><span class="metric-label">lines of C++</span></li>
+        <li><span class="metric-value">456</span><span class="metric-label">lines in the domain layer</span></li>
+        <li><span class="metric-value">0</span><span class="metric-label">Qt includes in that layer</span></li>
+      </ul>
+    </header>
+
+    <h2>What it does</h2>
+    <p>Two ten-by-ten grids side by side. You place a fleet of ten ships by hand, the computer places its own at random, and then the two sides alternate shots until one fleet is gone. It implements the Soviet variant of the rules rather than the boxed-game one, which mainly means the fleet is one four-cell ship, two threes, three twos and four singles, and that ships may not touch <em>even diagonally</em>.</p>
+    <p>That adjacency rule is the only genuinely fiddly piece of game logic. <code>Board::hasAdjacentShip</code> walks all eight neighbours of every cell a proposed ship would occupy, and <code>canPlaceShip</code> refuses the placement if any of them is already occupied. Getting it wrong in the permissive direction produces a board that looks fine and plays wrong, which is exactly the kind of thing worth having behind a testable interface.</p>
+
+    <h2>The separation</h2>
+    <p>The whole project exists because I wanted to build a Qt application where deleting the UI would not touch the rules. Three classes carry the game:</p>
+    <ul>
+      <li><code>Ship</code> — size, origin, orientation, hit count. It can enumerate the cells it covers and say whether it is sunk.</li>
+      <li><code>Board</code> — a grid of <code>CellState</code> plus the ships on it. It owns placement legality, placement, and resolving a shot into hit/miss/sunk. It does not know whose board it is.</li>
+      <li><code>Game</code> — two boards, the fleet list, a <code>GameState</code> enum, and the computer's targeting state. It is the only thing that decides whose turn it is.</li>
+    </ul>
+    <p>Between them those headers include <code>&lt;vector&gt;</code>, <code>&lt;memory&gt;</code>, <code>&lt;random&gt;</code> and <code>&lt;chrono&gt;</code>. No <code>QObject</code>, no signals, no <code>Q_OBJECT</code> macro. They compile with a bare <code>g++</code> and no Qt on the include path, which is the property I actually wanted — not because I plan to port the front end, but because it forces every rule to live in one place.</p>
+
+    <blockquote><p>The widgets never hold state the model does not already have. If the two ever disagree, there is only one of them to fix.</p></blockquote>
+
+    <p><code>BoardWidget</code> is the whole of the view. It holds a non-owning <code>Board*</code> and paints whatever that board currently says: <code>paintEvent</code> reads <code>getCellState()</code> and <code>getShips()</code> and draws the result. It has no grid of its own and no opinion about whether a move is legal. On a click it converts pixel coordinates into a row and column and emits <code>cellClicked(row, col)</code>, and that is the entire input path.</p>
+    <p>The same class draws both grids. Hiding the opponent's fleet is <code>setShowShips(false)</code> — a display flag, not a second model. <code>MainWindow</code> owns the <code>Game</code>, wires the two widgets' signals to slots that call into it, and reads <code>getState()</code> back to decide what the status line says. So the flow runs one way: click, slot, game method, state change, repaint from the model.</p>
+    <p>The seam is not spotless. <code>MainWindow</code> passes <code>&amp;game_-&gt;getPlayerBoard()</code> to the widget, so the view holds a raw pointer into the <code>Game</code>'s interior, and <code>Game</code> exposes both boards non-const. It is safe because the game outlives the widgets, but it is a wider interface than the widget needs, and a <code>const Board&amp;</code> would have been the honest signature.</p>
+
+    <h2>Building against two Qt majors</h2>
+    <p>CMake tries Qt6 first and falls back to Qt5:</p>
+    <pre><code>find_package(Qt6 COMPONENTS Core Widgets QUIET)
+if(Qt6_FOUND)
+    set(QT_VERSION_MAJOR 6)
+else()
+    find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+    set(QT_VERSION_MAJOR 5)
+endif()</code></pre>
+    <p>Only the link line differs; nothing in the source is version-specific, which is mostly a consequence of using a small, old part of the API. The application code touches <code>QPainter</code>, layouts, <code>QTimer::singleShot</code> and a handful of widgets, and all of that is spelled the same way in both.</p>
+    <p class="note">Honest caveat: the Qt6 path is what I actually build and run — verified on CMake 4.3, GCC 16.1 and Qt 6.11. The Qt5 branch is written and is the older, better-trodden spelling, but I have not compiled it, because the machine had Qt5's runtime libraries without the development package. Calling it "tested on both" would be a guess.</p>
+
+    <h2>What is not finished</h2>
+    <p>The computer opponent fires at random until it hits, then works through the four orthogonal neighbours of that hit before going back to random fire. It does not infer a ship's orientation from two hits in a line, and it does not rule out the diagonals around a sunk ship even though the placement rules guarantee they are empty. It is beatable, and it is meant to be, but it is the obvious next thing.</p>
+    <p><code>BoardWidget</code> also carries a placement-preview method and hover tracking that nothing calls — <code>MainWindow</code> only ever clears the preview, never sets it. It is dead code and should either be wired up or deleted. And there are no tests: the domain layer is shaped so they would be easy to write, which is not the same as having written them.</p>
+
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="../index.html">← All work</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

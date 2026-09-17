@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stylesheet preview — Uliana Hrab</title>
+<meta name="description" content="Every element and class used by index.html, cv.html and work/_TEMPLATE.html, on one page.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../../index.html" aria-current="page">Work</a>
+    <a href="../../cv.html">CV</a>
+  </nav>
+</header>
+
+<!-- ===== 1. index.html: hero + work list ===================== -->
+<main class="page page--index">
+  <section class="hero">
+    <h1>Applied mathematics, machine learning and C++.</h1>
+    <p>I am an applied mathematics student in Norway. Most of what I know I learned by
+    building things and then finding out what was wrong with them — a fraud classifier whose
+    first validation split leaked, a path planner that had to be taught that the shortest
+    route is not the safest one.</p>
+    <p>Everything below is my own work, with the full write-up and the code behind each one.</p>
+  </section>
+
+  <section class="work-list">
+    <h2>Work</h2>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="#">Ethereum Fraud Detection</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Course paper · Machine learning</p>
+      <p>Binary classification of Ethereum addresses from 50 transaction-derived features.
+      LightGBM reaches F1 0.987 on held-out data — but the part worth reading is what it took
+      to believe that number: a naive random split was leaking 5.7% of the test set.</p>
+      <p class="work-stack">Python · scikit-learn · LightGBM · XGBoost · pandas · pytest</p>
+      <p class="work-links"><a href="#">Read</a> · <a href="https://github.com/draurug/ethereum-fraud-detection">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="#">Computational Geometry in OpenGL — a long title, to check wrapping</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Coursework · Graphics</p>
+      <p>Five programs working up from a shaded triangle to real geometry: Bresenham against
+      Xiaolin Wu rasterization side by side, segment intersection by orientation test, Graham
+      scan convex hulls and ear-clipping triangulation.</p>
+      <p class="work-stack">C++ · OpenGL · GLEW · FreeGLUT</p>
+      <p class="work-links"><a href="#">Read</a> · <a href="https://crossw.draugur3-14.workers.dev">Play</a> · <a href="https://github.com/draurug/opengl-geometry-labs">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="#">Blockchain Papers</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Academic writing</p>
+      <p>Two papers for a blockchain technology course: where blockchain and machine learning
+      actually meet, and bin packing as an NP-complete problem.</p>
+      <p class="work-stack">LaTeX · Beamer</p>
+      <p class="work-links"><a href="#">Read</a> · <a href="https://github.com/draurug/blockchain-papers">Code</a></p>
+    </article>
+  </section>
+
+  <section class="hero">
+    <h2>Get in touch</h2>
+    <p><a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> ·
+    <a href="https://github.com/draurug">github.com/draurug</a> ·
+    <a href="#">CV</a></p>
+  </section>
+</main>
+
+<!-- ===== 2. work/_TEMPLATE.html ============================== -->
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Coursework · Machine learning</p>
+      <h1>Ethereum Fraud Detection</h1>
+      <p class="work-lede">One or two sentences saying what this is and why it is
+        worth reading, set slightly larger and quieter than the body.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2026</dd></div>
+        <div><dt>Stack</dt><dd>Python · LightGBM · pytest</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/ethereum-fraud-detection">GitHub</a></dd></div>
+      </dl>
+      <ul class="metrics">
+        <li><span class="metric-value">0.987</span><span class="metric-label">F1, held-out</span></li>
+        <li><span class="metric-value">0.999</span><span class="metric-label">PR-AUC</span></li>
+        <li><span class="metric-value">5.7%</span><span class="metric-label">leaked rows removed</span></li>
+      </ul>
+    </header>
+
+    <h2>Section heading</h2>
+    <p>Body text set for a measure of roughly sixty-six characters, which is where a
+      serif face stays comfortable to read. The rhythm is fixed by a single spacing
+      unit, so headings, lists and figures all land on the same vertical grid.</p>
+    <p>A second paragraph, to show the spacing between them and to confirm that long
+      unbroken tokens such as <code>group_aware_train_test_split</code> wrap instead of
+      pushing the page sideways.</p>
+
+    <h3>Subsection</h3>
+    <p>Body text with an <a href="#">inline link</a> and <code>inline_code</code>, plus
+      an <a href="https://example.org/a/very/long/path">external link</a> whose URL is
+      printed after it on paper.</p>
+
+    <ul>
+      <li>An unordered item.</li>
+      <li>Another item, with a nested list:
+        <ul><li>Nested item.</li></ul>
+      </li>
+    </ul>
+
+    <ol>
+      <li>First ordered item.</li>
+      <li>Second ordered item.</li>
+    </ol>
+
+    <blockquote><p>A pulled-out point worth reading twice, marked by a hairline rule
+      rather than a box.</p></blockquote>
+
+    <figure>
+      <img src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 260'%3E%3Crect width='640' height='260' fill='%23eae7de'/%3E%3Cpath d='M40 220 L180 150 L320 170 L460 70 L600 40' fill='none' stroke='%237a2622' stroke-width='3'/%3E%3C/svg%3E" alt="A placeholder line chart rising from left to right.">
+      <figcaption>Caption explaining what to look at. Set in the UI face, small and
+        quiet, under a hairline.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+    <table>
+      <caption>What this table reports.</caption>
+      <thead>
+        <tr><th scope="col">Model</th><th scope="col">F1</th><th scope="col">PR-AUC</th><th scope="col">Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">LightGBM</th><td>0.987</td><td>0.999</td><td>Group-aware split</td></tr>
+        <tr><th scope="row">XGBoost</th><td>0.981</td><td>0.997</td><td>Same features</td></tr>
+        <tr><th scope="row">Logistic regression</th><td>0.842</td><td>0.911</td><td>Baseline</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <pre><code>def group_aware_split(df, groups, test_size=0.2):
+    # escape &lt; and &amp; inside code blocks
+    splitter = GroupShuffleSplit(test_size=test_size, random_state=0)
+    train_idx, test_idx = next(splitter.split(df, groups=groups))
+    return df.iloc[train_idx], df.iloc[test_idx]</code></pre>
+
+    <p class="note">Aside or caveat, set smaller and quieter with a rule down the left.</p>
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="#">← All work</a>
+    <a href="#">Next: CrossW →</a>
+  </nav>
+</main>
+
+<!-- ===== 3. cv.html ========================================== -->
+<main class="page page--cv">
+  <header class="work-head">
+    <h1>Curriculum vitae</h1>
+    <p class="work-lede">Applied mathematics student in Norway, working on machine learning,
+    computational geometry and systems programming.</p>
+    <dl class="work-meta">
+      <div><dt>Email</dt><dd><a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a></dd></div>
+      <div><dt>Phone</dt><dd>+47 46 55 57 59</dd></div>
+      <div><dt>Location</dt><dd>Norway</dd></div>
+      <div><dt>GitHub</dt><dd><a href="https://github.com/draurug">github.com/draurug</a></dd></div>
+    </dl>
+    <p class="no-print"><a href="#">Download as PDF</a> — this line is hidden in print.</p>
+  </header>
+
+  <section class="cv-section">
+    <h2>Selected work</h2>
+    <p class="note">Longer write-ups of each project are on the <a href="#">work page</a>.</p>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="#">Ethereum Fraud Detection</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Classified 9,841 Ethereum addresses from 50 transaction-derived features; LightGBM
+      reached F1 0.987 on held-out data. Found and fixed a 5.7% leak first, and selected models
+      by cross-validated PR-AUC rather than by test score.
+      <br><span class="cv-stack">Python · scikit-learn · LightGBM · XGBoost · pytest</span></p>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3><a href="#">Networked Tic-Tac-Toe</a> and <a href="#">Battleship</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p>Two Qt desktop games in C++, one of them over TCP with a packet protocol on Boost.Asio.
+      <br><span class="cv-stack">C++17/20 · Qt · Boost.Asio · CMake</span></p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Technical skills</h2>
+    <div class="skills-grid">
+      <div>
+        <h3>Languages</h3>
+        <p>Python, C++ (17/20), TypeScript, JavaScript, SQL, C#, Octave/MATLAB, LaTeX</p>
+      </div>
+      <div>
+        <h3>Data and machine learning</h3>
+        <p>scikit-learn, LightGBM, XGBoost, pandas, NumPy, SciPy, matplotlib, seaborn,
+        Jupyter, Power BI</p>
+      </div>
+      <div>
+        <h3>Web and tooling</h3>
+        <p>Next.js, React, Vue, Node, PostgreSQL, Git, CMake, pytest, Vitest, Docker,
+        Cloudflare Workers</p>
+      </div>
+      <div>
+        <h3>Other</h3>
+        <p>OpenGL, Qt, Boost.Asio, Unity and C#, Blender, Arduino</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Education</h2>
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>BSc Applied Mathematics — Odesa I. I. Mechnikov National University</h3>
+        <span class="cv-date">2023 — present</span>
+      </div>
+      <p>Institute for Optimal Control and Economic Cybernetics. Coursework in numerical
+      methods, computational geometry, decision theory and machine learning.</p>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-entry-head">
+        <h3>IT Step Academy — IT-focused secondary programme</h3>
+        <span class="cv-date">2019 — 2022</span>
+      </div>
+      <p>Programming fundamentals, game development in Unity and C#, Blender, Arduino.</p>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <h2>Languages</h2>
+    <ul>
+      <li><strong>Ukrainian</strong> and <strong>Russian</strong> — native</li>
+      <li><strong>English</strong> — C1, London School of English (2025)</li>
+      <li><strong>Norwegian</strong> — B2 course completed; Norskprøven passed</li>
+    </ul>
+  </section>
+
+  <section class="cv-section">
+    <h2>References</h2>
+    <p>Available on request.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

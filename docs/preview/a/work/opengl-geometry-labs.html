@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGL graphics labs — Uliana Hrab</title>
+<meta name="description" content="Seven C++/OpenGL lab programs covering transforms, animation, segment intersection, Bresenham and Wu rasterization, Graham scan and ear clipping.">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="../index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="../index.html">Work</a>
+    <a href="../cv.html">CV</a>
+  </nav>
+</header>
+
+<main class="page page--work">
+  <article>
+    <header class="work-head">
+      <p class="work-kind">Coursework · Computer graphics</p>
+      <h1>OpenGL geometry labs</h1>
+      <p class="work-lede">Five labs from a university graphics course, seven C++ programs in total, since lab 3 splits into 3.1, 3.2 and 3.3. Labs 1 to 3 cover context setup, transforms and animation on the fixed pipeline. Lab 4 decides segment intersection with an orientation predicate and rasterizes the segments with Bresenham and with Xiaolin Wu. Lab 5 builds a convex hull by Graham scan and triangulates a polygon by ear clipping.</p>
+      <dl class="work-meta">
+        <div><dt>Year</dt><dd>2025</dd></div>
+        <div><dt>Stack</dt><dd>C++ · OpenGL (fixed pipeline) · GLEW · FreeGLUT</dd></div>
+        <div><dt>Size</dt><dd>~1000 lines across 7 files</dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/draurug/opengl-geometry-labs">GitHub</a></dd></div>
+      </dl>
+    </header>
+
+    <h2>Labs 1 to 3</h2>
+
+    <p><strong>Lab 1</strong> is the bootstrap: <code>glutInit</code>, a single-buffered RGB window, <code>glewInit</code> with its return value checked, and one <code>GL_TRIANGLES</code> block whose three vertices carry three different colors. The fixed pipeline interpolates the colors across the face, so the triangle comes out Gouraud-shaded with no extra code. Forty lines in total. It confirms that the toolchain links and the context comes up.</p>
+
+    <p><strong>Lab 2</strong> adds a modelview matrix and keyboard input. Arrow keys translate a triangle, <code>+</code>/<code>-</code> scale, <code>q</code>/<code>e</code> rotate, <code>r</code> resets. The transforms are issued as <code>glTranslatef · glRotatef · glScalef</code> inside a <code>glPushMatrix</code>/<code>glPopMatrix</code> pair, in that order. That order keeps rotation and scaling centred on the figure rather than on the world origin. Swapping the first two calls is the usual way to get this wrong.</p>
+
+    <p><strong>Lab 3</strong> is three variants of one animation, written as three separate programs. The figure is the parametric heart <code>x = 16sin³t</code>, <code>y = 13cos t − 5cos 2t − 2cos 3t − cos 4t</code>, sampled at one-degree steps into a <code>GL_TRIANGLE_FAN</code>. In 3.1 the figure travels an ellipse. In 3.2 it spins in place. In 3.3 it does both, with space to pause and <code>c</code> to cycle colors. A 16 ms <code>glutTimerFunc</code> drives the phase, which ties animation speed to the timer rather than to frame rate.</p>
+
+    <figure>
+      <img src="../assets/img/opengl-lab3.png" alt="A raspberry-coloured heart shape drawn on a pale background, tilted mid-rotation.">
+      <figcaption>Lab 3.3, caught mid-orbit. The outline is 360 samples of the parametric heart, filled as a triangle fan.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="../assets/img/opengl-lab1.png" alt="A Gouraud-shaded triangle: yellow at the top vertex, cyan at the lower left, magenta at the lower right, on a dark slate background.">
+      <figcaption>Lab 1. Three vertex colors, interpolated across the face by the fixed pipeline.</figcaption>
+    </figure>
+
+    <h2>Lab 4: segment intersection</h2>
+
+    <p>Lab 4 takes two line segments and reports whether they meet. The program never solves for the crossing point. Computing that point would require a division, a guard for the parallel case and a loss of precision, and the predicate avoids all three. Everything rests on one primitive:</p>
+
+    <pre><code>int orientation(Point p, Point q, Point r)
+{
+    float v = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (std::abs(v) &lt; 0.00001f) return 0;
+    return v &gt; 0 ? 1 : 2;
+}</code></pre>
+
+    <p>That expression is a 2×2 determinant, the z-component of the cross product of <code>q−p</code> and <code>r−q</code>. Its magnitude is twice the area of triangle <em>pqr</em>. Only the sign is used, and the sign says which side of the directed line <em>pq</em> the point <em>r</em> falls on. Zero means collinear.</p>
+
+    <p>Intersection follows from a straddle argument. In general position, <em>p₁q₁</em> and <em>p₂q₂</em> cross exactly when <em>p₂</em> and <em>q₂</em> lie on opposite sides of line <em>p₁q₁</em> <em>and</em> <em>p₁</em> and <em>q₁</em> lie on opposite sides of line <em>p₂q₂</em>. One condition alone is insufficient, since a short segment can straddle an infinite line while sitting far off the end of the actual segment. Both conditions together pin the crossing inside both segments. In code that is four orientation calls and the test <code>o1 != o2 &amp;&amp; o3 != o4</code>.</p>
+
+    <p>The four collinear cases are handled separately. When an orientation returns 0 the segments share a line, and the question collapses to whether a point lies between two others on that line. <code>onSegment</code> answers with a bounding-box comparison, which would be wrong as a general containment test and is exact under a proven collinearity.</p>
+
+    <blockquote><p>The whole predicate is a handful of multiplications and comparisons: constant time, no division, no special case for vertical or parallel segments.</p></blockquote>
+
+    <p>On floating-point input the <code>1e-5</code> epsilon does real work. It decides what counts as collinear, and near-degenerate cases land on whichever side of it the arithmetic falls. With integer coordinates the determinant is exact and the epsilon disappears. That is the version worth shipping.</p>
+
+    <h3>Bresenham and Wu</h3>
+
+    <p>The same two segment pairs are rasterized twice, once per column of the window, so the two algorithms run on identical input. Intersecting pairs are drawn green and disjoint pairs red, which puts the predicate's answer on screen instead of in a print statement.</p>
+
+    <p><strong>Bresenham</strong> keeps an integer error term <code>err = dx - dy</code> and at each step decides from its sign whether to advance x, y, or both. No floating point appears anywhere: the loop is additions, subtractions and comparisons on integers. It emits exactly one fully-lit pixel per step, so the line is crisp and the staircase is visible.</p>
+
+    <p><strong>Wu</strong> answers a different question: how much of each pixel the line covers. It walks the major axis keeping a floating-point <code>interY</code>, advances it by <code>gradient = dy/dx</code> each column, and lights the two pixels bracketing it with brightnesses <code>rfpart(interY)</code> and <code>fpart(interY)</code>. Those two sum to 1, so intensity per column is constant. Endpoints get an <code>xGap</code> factor so that a line starting mid-pixel does not begin with a full-brightness stub. Steep lines are transposed up front, which leaves the loop handling only the shallow case.</p>
+
+    <p>Wu costs twice the pixel writes, floating-point instead of integer arithmetic, and a blend-enabled framebuffer (<code>GL_SRC_ALPHA</code>, <code>GL_ONE_MINUS_SRC_ALPHA</code>). Its correctness also depends on what is already under the line, because partial pixels composite with the background. Both algorithms are O(max(dx, dy)). The difference is in the constant factor.</p>
+
+    <figure>
+      <img src="../assets/img/opengl-lab4.png" alt="Four panels: two crossing segments drawn green and two parallel segments drawn red, each pair rendered once with Bresenham on the left and once with Wu on the right.">
+      <figcaption>Lab 4. Left half Bresenham, right half Wu; green means the orientation test reported an intersection. The Wu lines are visibly softer along their edges.</figcaption>
+    </figure>
+
+    <p class="note">One flaw: <code>putPixel</code> wraps every single pixel in its own <code>glBegin</code>/<code>glEnd</code> pair. That is one draw call per pixel. At a few thousand pixels in a static scene the cost is invisible, and it would be indefensible in any real renderer.</p>
+
+    <h2>Lab 5: convex hull and triangulation</h2>
+
+    <p>Two panels share one window, split with <code>glViewport</code>. Thirty random points with their hull sit on the left, a random simple polygon cut into triangles on the right. <code>R</code> regenerates both, so every run is a fresh test case rather than the one input that happened to work.</p>
+
+    <h3>Graham scan</h3>
+
+    <p>The pivot is the point with lowest <em>y</em>, leftmost on ties, and is guaranteed to lie on the hull. The remaining points are sorted by polar angle about it, using the cross-product sign as the comparator rather than <code>atan2</code>, with ties broken by squared distance. The sorted list is then walked with a stack, popping before each push while the last two entries and the candidate do not make a left turn:</p>
+
+    <pre><code>while (res.size() &gt;= 2 &amp;&amp;
+       cross(res[res.size() - 2], res[res.size() - 1], pts[i]) &lt;= 0.0f)
+    res.pop_back();</code></pre>
+
+    <p>The <code>&lt;= 0</code> rather than <code>&lt; 0</code> also discards collinear points, so the hull comes back with corners only and no redundant vertices along an edge. Complexity is O(n log n), dominated by the sort: each point is pushed once and popped at most once, so the scan itself is amortized O(n).</p>
+
+    <h3>Ear clipping</h3>
+
+    <p>The polygon is first normalized to counter-clockwise orientation using the shoelace signed area, since every subsequent sign test assumes that convention. Vertices are then removed one at a time, each removal emitting a triangle.</p>
+
+    <p>A vertex is an <em>ear</em> when two conditions hold. First, it is convex: <code>cross(prev, curr, next) &gt; 0</code> in a counter-clockwise polygon, meaning the triangle cut off there points into the polygon. Second, the triangle <em>(prev, curr, next)</em> is empty, with no other vertex inside it. The second condition is not redundant, because a convex vertex whose triangle swallows a distant vertex would produce a triangle sticking outside the shape. <code>isEar</code> therefore tests every remaining vertex against the candidate triangle with three cross-product signs.</p>
+
+    <p>An ear always exists by the two-ears theorem: every simple polygon with more than three vertices has at least two. The loop therefore terminates, removing one vertex per pass until three remain, which gives <em>n − 2</em> triangles for an <em>n</em>-gon. Cost is O(n) per ear test and O(n) tests per removal over O(n) removals, so O(n³) in the naive form written here. For 7 to 10 vertex polygons that is irrelevant. For a mesh it would not be, and the standard fix is to cache convexity and revalidate only the two neighbours of a removed ear.</p>
+
+    <p>The code also carries a <code>guard</code> counter and an <code>if (!found) break;</code>. Neither should fire on a simple polygon. They exist because the random generator could in principle produce a self-intersecting one, and a lab that hangs inside <code>glutMainLoop</code> is harder to debug than one that draws an incomplete triangulation.</p>
+
+    <figure>
+      <img src="../assets/img/opengl-lab5.png" alt="Two panels side by side: on the left scattered black points with an indigo convex hull polygon around them, on the right a black star-shaped polygon filled with teal triangles.">
+      <figcaption>Lab 5. Hull on the left, triangulation on the right, both regenerated on R.</figcaption>
+    </figure>
+
+    <p class="note">This is coursework: fixed-function OpenGL, single-file programs, no build system beyond a compiler invocation. The algorithms are textbook ones implemented from the definitions rather than called from a library, which was the point of the exercise.</p>
+  </article>
+
+  <nav class="work-footer-nav">
+    <a href="../index.html">← All work</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>

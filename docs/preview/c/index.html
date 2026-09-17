@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uliana Hrab — Applied mathematics, machine learning, C++</title>
+<meta name="description" content="Selected work by Uliana Hrab: fraud detection on Ethereum addresses, a themed crossword site, Voronoi path planning, computational geometry and Qt desktop applications.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="site-name" href="index.html">Uliana Hrab</a>
+  <nav class="site-nav">
+    <a href="index.html" aria-current="page">Work</a>
+    <a href="cv.html">CV</a>
+  </nav>
+</header>
+
+<main class="page page--index">
+  <section class="hero">
+    <h1>Applied mathematics, machine learning and C++.</h1>
+    <p>I am an applied mathematics student in Norway. I work mostly on machine learning,
+    computational geometry and C++ desktop software.</p>
+    <p>Below are eight projects. Each one links to a write-up and to the source.</p>
+  </section>
+
+  <section class="work-list">
+    <h2>Work</h2>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/ethereum-fraud-detection.html">Ethereum Fraud Detection</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Course paper · Machine learning</p>
+      <p>Binary classification of Ethereum addresses from 50 transaction-derived features.
+      LightGBM reaches F1 0.987 on held-out data. That number only meant something after I
+      found the leak behind it: a naive random split was putting 5.7% of the test set into
+      training through duplicate feature profiles.</p>
+      <p class="work-stack">Python · scikit-learn · LightGBM · XGBoost · pandas · pytest</p>
+      <p class="work-links"><a href="work/ethereum-fraud-detection.html">Read</a> · <a href="https://github.com/draurug/ethereum-fraud-detection">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/crossw.html">CrossW</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Product · Full-stack TypeScript</p>
+      <p>A crossword site. The theme of a puzzle is carried by its clues. ТРАМВАЙ is an
+      ordinary word, and the clue "the transport that beheaded Berlioz" is what ties it to
+      <em>The Master and Margarita</em>. Four themed packs, twelve puzzles live today.</p>
+      <p class="work-stack">Next.js 15 · React 19 · TypeScript · Tailwind · Vitest · Cloudflare Workers</p>
+      <p class="work-links"><a href="work/crossw.html">Read</a> · <a href="https://crossw.draugur3-14.workers.dev">Play</a> · <a href="https://github.com/draurug/CrossW">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/voronoi-path-planner.html">Voronoi Path Planner</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Course project · Computational geometry</p>
+      <p>A path planner for a robot with physical width, where clearance matters more than
+      distance. It builds a clearance field and binary-searches the largest clearance that
+      still connects start to goal. Dijkstra then runs inside that corridor.</p>
+      <p class="work-stack">C++ · FreeGLUT · Python · NumPy · SciPy · matplotlib</p>
+      <p class="work-links"><a href="work/voronoi-path-planner.html">Read</a> · <a href="https://github.com/draurug/voronoi-path-planner">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/tictactoe.html">Networked Tic-Tac-Toe</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Desktop · Systems</p>
+      <p>A Qt client for a multiplayer game server. I wrote the player list, the invitation
+      handshake with accept and decline, and the turn synchronisation that keeps two clients
+      agreeing on whose turn it is. The Boost.Asio transport underneath is a third-party
+      course library. The write-up says which parts are which.</p>
+      <p class="work-stack">C++20 · Qt · CMake</p>
+      <p class="work-links"><a href="work/tictactoe.html">Read</a> · <a href="https://github.com/draurug/TicTacToe">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/opengl-geometry-labs.html">Computational Geometry in OpenGL</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Coursework · Graphics</p>
+      <p>Five labs, seven programs. They start at a shaded triangle and work up to Bresenham
+      and Xiaolin Wu rasterization side by side, segment intersection by orientation test,
+      Graham scan convex hulls and ear-clipping triangulation.</p>
+      <p class="work-stack">C++ · OpenGL · GLEW · FreeGLUT</p>
+      <p class="work-links"><a href="work/opengl-geometry-labs.html">Read</a> · <a href="https://github.com/draurug/opengl-geometry-labs">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/numerical-methods.html">Numerical Methods</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Coursework · Computational mathematics</p>
+      <p>Eight labs in Octave, each with its own figures: interpolation on uniform and
+      Chebyshev nodes, splines, least squares, Simpson with Runge error control, Runge–Kutta
+      and Adams. The interpolation plots show the conditioning of the monomial basis more
+      than they show the Runge phenomenon they are usually read for.</p>
+      <p class="work-stack">Octave · MATLAB · LaTeX</p>
+      <p class="work-links"><a href="work/numerical-methods.html">Read</a> · <a href="https://github.com/draurug/numerical-methods-octave">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/battleship.html">Battleship</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Desktop · C++</p>
+      <p>Qt Widgets, with the rules kept out of the interface. The domain classes include no
+      Qt headers and the widget only paints. Builds on Qt6; the Qt5 fallback in the CMake file
+      is written but has not been compiled.</p>
+      <p class="work-stack">C++17 · Qt6 · Qt5 · CMake</p>
+      <p class="work-links"><a href="work/battleship.html">Read</a> · <a href="https://github.com/draurug/qt-battleship">Code</a></p>
+    </article>
+
+    <article class="work-item">
+      <div class="work-item-head">
+        <h3><a href="work/blockchain-papers.html">Blockchain Papers</a></h3>
+        <span class="cv-date">2026</span>
+      </div>
+      <p class="work-kind">Academic writing</p>
+      <p>Two papers for a blockchain technology course. The first looks at where blockchain and
+      machine learning actually meet, against the claims made for them. The second covers bin
+      packing as an NP-complete problem and the approximations that make it usable.</p>
+      <p class="work-stack">LaTeX · Beamer</p>
+      <p class="work-links"><a href="work/blockchain-papers.html">Read</a> · <a href="https://github.com/draurug/blockchain-papers">Code</a></p>
+    </article>
+  </section>
+
+  <section class="hero">
+    <h2>Get in touch</h2>
+    <p><a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> ·
+    <a href="https://github.com/draurug">github.com/draurug</a> ·
+    <a href="cv.html">CV</a></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Uliana Hrab · <a href="mailto:ulyanagrab333@gmail.com">ulyanagrab333@gmail.com</a> · <a href="https://github.com/draurug">GitHub</a></p>
+</footer>
+</body>
+</html>
