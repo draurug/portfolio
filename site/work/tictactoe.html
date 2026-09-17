@@ -35,19 +35,17 @@
     </header>
 
     <h2>What is mine and what is not</h2>
-    <p>Worth stating first. The client is mine: the UI, the dialogs, the player list, and <code>Logic</code>, the state machine between them and the socket. The server, the TCP plumbing and the protocol constants are <strong>not</strong> — they come from a course repository by another author, kept as a GPL-3.0 git submodule so the boundary stays visible rather than quietly absorbed. My <code>Logic</code> derives from their <code>tic_tac::TicTacClient</code>. The 942 lines in the metric above are theirs, counted separately for that reason.</p>
+    <p>Worth stating first. The client is mine: the UI, the dialogs, the player list, and <code>Logic</code>, the state machine between them and the socket. The server, the TCP plumbing and the protocol constants are <strong>not</strong> — they come from a course repository by another author, kept as a GPL-3.0 submodule so the boundary stays visible. The 942 lines in the metric above are theirs, counted separately for that reason.</p>
 
     <h2>The protocol</h2>
-    <p>Plain ASCII, comma-separated fields, each message terminated by a semicolon. Fourteen message types, split by prefix into client-to-server and server-to-client. The server is a relay and a registry: it tracks who is online and who is busy and forwards invitations and moves. It arbitrates nothing about the game itself. Framing bites first — several messages can land in one TCP read, so the reader splits on <code>;</code> rather than assuming one message per packet.</p>
+    <p>Plain ASCII, comma-separated fields, semicolon-terminated. Fourteen message types. The server is a relay and a registry: it tracks who is online and busy and forwards invitations and moves, arbitrating nothing about the game. Framing bites first — several messages can land in one TCP read, so the reader splits on <code>;</code> rather than assuming one per packet.</p>
 
     <div class="table-wrap">
     <table>
       <caption>The messages that carry the handshake.</caption>
       <thead><tr><th scope="col">Message</th><th scope="col">Direction</th><th scope="col">Meaning</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Hi</th><td>S→C</td><td>Greeting; client must answer with a name</td></tr>
-        <tr><th scope="row">[PlayerName]</th><td>C→S</td><td>Register under this name</td></tr>
-        <tr><th scope="row">[PlayerList]</th><td>S→C</td><td>Name/busy pairs; empty busy field means free</td></tr>
+        <tr><th scope="row">[PlayerList]</th><td>S→C</td><td>Name/busy pairs; empty busy field is free</td></tr>
         <tr><th scope="row">[Invite]</th><td>C→S</td><td>Ask to play against someone</td></tr>
         <tr><th scope="row">[Invitation]</th><td>S→C</td><td>You have been invited</td></tr>
         <tr><th scope="row">[AcceptInvitation]</th><td>C→S</td><td>Accept</td></tr>
@@ -65,21 +63,24 @@
   |                     |&lt;--- [AcceptInvitation],A --|  B accepts
   |&lt;- [InvitationAccepted],B                          |
   |   A := O, waits     |               B := X, moves first</code></pre>
-    <p>The part I find interesting is that <strong>roles are never negotiated on the wire</strong>. There is no message that says "you are X". The convention is positional — whoever accepts plays X and moves first — and each client sets its own <code>m_playerRoleX</code> locally at the moment it learns the outcome, from opposite branches of the code.</p>
-    <p>That works, and it costs a round trip less than negotiating. It is also fragile in a specific way: if either side ever takes the wrong branch, the two clients disagree silently and both boards drift apart while everything still looks fine. So I added a check in the step handler that rejects any incoming move claiming the symbol this client believes is its own. It cannot repair the disagreement, but it turns silent corruption into a visible refusal, which is the difference between a bug you can find and one you cannot.</p>
+    <p>The part I find interesting is that <strong>roles are never negotiated on the wire</strong>. No message says "you are X". The convention is positional — whoever accepts plays X and moves first — and each client sets its own <code>m_playerRoleX</code> locally when it learns the outcome, from opposite branches of the code.</p>
+    <p>That costs a round trip less than negotiating, and it is fragile in a specific way: if either side takes the wrong branch, the two clients disagree silently and the boards drift apart while everything still looks fine. So the step handler now rejects any incoming move claiming the symbol this client believes is its own. That turns silent corruption into a visible refusal, which is the difference between a bug you can find and one you cannot.</p>
 
     <h2>Turn synchronisation, and the missing end of the game</h2>
-    <p>There is no turn token in the protocol. Each client holds a single <code>bool m_makingStep</code>: set true on the accepting side at game start and false on the inviting side, cleared when you send your own move, set when a move arrives. Because everything is relayed through one server over an ordered TCP stream, the two flags stay complementary without any further coordination. The board is replicated rather than shared — both clients apply the same moves to their own grid.</p>
+    <p>There is no turn token. Each client holds a single <code>bool m_makingStep</code>: true on the accepting side at game start, cleared when you send a move, set when one arrives. Because everything is relayed through one server over an ordered TCP stream, the two flags stay complementary with no further coordination. The board is replicated, not shared.</p>
     <blockquote><p>The protocol reserves [GameEnded] and [GameIsOver]. The client library never sends them, and handles the latter with an empty branch. Nothing detected a win.</p></blockquote>
-    <p>So the game had no ending. I resolved it locally instead of extending someone else's protocol: because both clients hold the full grid and apply the same moves, both reach the same verdict with no round trip. On a win or draw the client reports the result, sends <code>[CloseGame]</code> so the server stops listing it as busy, clears the board and returns to the player list. Replicated state is what makes that legitimate — the conclusion is a pure function of a grid both sides already agree on.</p>
+    <p>So the game had no ending. I resolved it locally rather than extend someone else's protocol: both clients hold the full grid and apply the same moves, so both reach the same verdict with no round trip. On a win or draw the client reports the result, sends <code>[CloseGame]</code>, clears the board and returns to the player list. Replicated state is what makes that legitimate — the conclusion is a pure function of a grid both sides already agree on.</p>
 
     <h2>What I had to fix</h2>
-    <p>The client compiled but was not playable. The click handler bounds-checked a three-by-three array with <code>x &lt;= 3</code>, so a click in the widget's margin wrote past the end of it. It checked neither the state machine nor whose turn it was, so you could mark cells before a game started and move twice in a row. The grid was never cleared between games. The "waiting for response" dialog was heap-allocated, never freed, and dereferenced through a stale pointer after a cancel. And <code>Scene</code> declared a scoreboard and reset buttons that were never constructed, with methods that dereferenced them — unreachable in the networked flow, but a crash waiting for whoever wired them up.</p>
-    <p>On the build side, <code>find_package</code> was asking Qt for a component called <code>Boost</code>, and the Boost lookup relied on CMake's <code>FindBoost</code>, removed in CMake 4.0.</p>
+    <p>The client compiled but was not playable. The click handler bounds-checked a three-by-three array with <code>x &lt;= 3</code>, so a click in the widget's margin wrote past the end of it; it checked neither the state machine nor whose turn it was, so you could mark cells before a game started and move twice in a row; and the grid was never cleared between games. The "waiting for response" dialog was heap-allocated, never freed, and dereferenced through a stale pointer after a cancel. <code>Scene</code> declared a scoreboard that was never constructed, with methods that dereferenced it.</p>
 
     <h2>How far it is verified</h2>
-    <p>I wrote a raw-socket probe in Python that drives the wire protocol against the real server — register, invite, accept, a move each way — and it passes. Two real clients started headless both connect and register cleanly.</p>
-    <p class="note">What I have <em>not</em> verified is a full two-client game through the GUI. Accepting an invitation goes through a modal dialog and every move is a widget click, so driving one headlessly needs a UI-automation harness this repo does not have. The invite, turn and game-over logic is implemented and compiles, and the protocol underneath it is tested, but the combination has only been reasoned about, not exercised end to end.</p>
+    <p>A headless test plays complete games between two real clients against the real server, wired into <code>ctest</code>. It builds two <code>MainWindow</code>s, each with its own <code>Logic</code>, exactly as <code>main.cpp</code> wires the shipped app, and starts the server as a child process. Moves go in through <code>QTest::mouseClick</code> on the real board, invitations are answered by accepting the real modal dialog, and results are read out of the real message boxes. Nothing is stubbed.</p>
+    <p>It covers registration and the player table, the invite button through to acceptance, role assignment, a game played to a win with <strong>both</strong> clients asserted to detect it and agree, an out-of-turn click asserted to change nothing, the board clearing afterwards, a declined invitation, and a draw.</p>
+    <p>Making that possible meant one change to the application: <code>MainWindow</code> pulled its <code>Logic</code> from a process-wide singleton in ten places, so two clients could not coexist in one process. Injecting <code>Logic&amp;</code> is what made it drivable.</p>
+    <p>Writing it also turned up a shutdown bug: <code>closeSocket()</code> only calls <code>close()</code>, which does not wake a thread already blocked in <code>read()</code>, so joining the reader hangs forever. The application never notices, because it never destroys its <code>Logic</code> — it just leaks the thread at exit.</p>
+    <blockquote><p>Reverting the turn guard makes the out-of-turn assertion fail; stubbing out the win check makes the game-over assertion fail. The tests fail when the code is wrong, which is the only thing that makes them worth having.</p></blockquote>
+    <p class="note">Still not covered: Qt5, the untested branch of the build fallback; reconnection and a partner quitting mid-game, neither of which has defined behaviour yet; the settings dialog, which the tests bypass; and anything beyond two clients on loopback.</p>
 
   </article>
 
