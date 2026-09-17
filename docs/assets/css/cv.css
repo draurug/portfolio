@@ -19,9 +19,9 @@
   --ink-mid: #56545e;    /* 7.3:1 */
   --rule: #ddd9d1;
   --rule-strong: #14141a;
-  --accent: #c43317;     /* vermilion, 5.8:1 on white */
-  --accent-ink: #ffffff; /* on the accent block: 5.8:1 */
-  --accent-2: #0d4f63;   /* deep teal, 8.4:1 */
+  --accent: #aa3731;     /* Quiet Light red, 6.3:1 on white */
+  --accent-ink: #ffffff; /* on the accent block: 6.3:1 */
+  --accent-2: #3a56a8;   /* Quiet Light blue, darkened to 6.5:1 */
 
   --gutter: 1.15rem;
   --measure: 60ch;
