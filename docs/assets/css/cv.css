@@ -256,7 +256,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   font-family: var(--sans);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--accent);
   margin: 0 0 1.5rem;
   padding-bottom: 0.4rem;
   border-bottom: 3px solid var(--rule-strong);
@@ -502,7 +502,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 1rem 1.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.25rem;
 }
 .portrait {
   width: 104px;
@@ -528,7 +528,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 @media print {
@@ -579,4 +579,4 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 @media (min-width: 46em) {
   .hero .intro h1 { font-size: 3.6rem; }
 }
-.hero:first-child .intro-role { font-size: 1rem; color: var(--accent); }
+.hero:first-child .intro-role { font-size: 1rem; color: var(--ink); }
