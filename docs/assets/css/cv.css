@@ -406,7 +406,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 
 /* --- CV ---------------------------------------------------- */
 .page--cv .work-head { margin-bottom: 2.5rem; }
-.page--cv .work-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.5rem 2rem; }
+.page--cv .work-meta { display: flex; flex-wrap: wrap; gap: 0.6rem 2.25rem; }
 .page--cv .work-meta dd { margin: 0.1rem 0 0; }
 .cv-section { margin-bottom: 3.5rem; }
 .cv-entry {
