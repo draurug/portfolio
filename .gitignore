@@ -15,3 +15,6 @@ node_modules/
 
 # working copies of source projects — published as their own repos
 /work/
+
+# CV variant carrying referee names and contacts — never published
+/private/
