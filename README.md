@@ -1,9 +1,9 @@
 # Portfolio site
 
-Static site, no build step. Everything that gets deployed lives in `site/`.
+Static site, no build step. Everything that gets deployed lives in `docs/` — the folder name GitHub Pages serves from.
 
 ```
-site/
+docs/
   index.html          list of work
   cv.html             CV, with print styles for the PDF
   work/*.html         one page per project
@@ -14,7 +14,7 @@ site/
 ## Run locally
 
 ```bash
-python3 -m http.server -d site 8000
+python3 -m http.server -d docs 8000
 ```
 
 ## Deploy
@@ -22,12 +22,12 @@ python3 -m http.server -d site 8000
 Cloudflare Pages, connected to this repository:
 
 - Build command: *(empty)*
-- Build output directory: `site`
+- Build output directory: `docs`
 
 ## Regenerating the CV PDF
 
 ```bash
-chromium --headless --print-to-pdf=site/assets/pdf/Uliana-Hrab-CV.pdf \
+chromium --headless --print-to-pdf=docs/assets/pdf/Uliana-Hrab-CV.pdf \
          --no-pdf-header-footer http://localhost:8000/cv.html
 ```
 
