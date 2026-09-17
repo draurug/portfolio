@@ -73,8 +73,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* --- Display type ------------------------------------------ */
 h1, h2, h3 {
-  font-family: var(--display);
-  font-stretch: 85%;
+  font-family: var(--sans);
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -0.015em;
@@ -111,8 +110,7 @@ pre {
 pre code { background: none; padding: 0; font-size: inherit; }
 
 blockquote {
-  font-family: var(--display);
-  font-stretch: 85%;
+  font-family: var(--sans);
   font-size: 1.45rem;
   font-weight: 600;
   line-height: 1.16;
@@ -151,8 +149,7 @@ caption {
 }
 th, td { text-align: left; padding: 0.5rem 1rem 0.5rem 0; vertical-align: top; }
 thead th {
-  font-family: var(--display);
-  font-stretch: 85%;
+  font-family: var(--sans);
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -196,8 +193,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   background: var(--paper);
 }
 .site-name {
-  font-family: var(--display);
-  font-stretch: 85%;
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 1.15rem;
   letter-spacing: 0.01em;
@@ -336,8 +332,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .metrics { list-style: none; margin: 0 0 var(--step); padding: 0; display: flex; flex-wrap: wrap; gap: 1.1rem 2rem; }
 .metrics li { display: flex; flex-direction: column; margin: 0; }
 .metric-value {
-  font-family: var(--display);
-  font-stretch: 85%;
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 2.1rem;
   line-height: 0.95;
