@@ -528,7 +528,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
-  color: var(--ink);
+  color: var(--accent);
 }
 
 @media print {
@@ -579,4 +579,4 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 @media (min-width: 46em) {
   .hero .intro h1 { font-size: 3.6rem; }
 }
-.hero:first-child .intro-role { font-size: 1rem; color: var(--ink); }
+.hero:first-child .intro-role { font-size: 1rem; color: var(--accent); }
