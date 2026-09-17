@@ -25,7 +25,7 @@
 
   --gutter: 1.15rem;
   --measure: 60ch;
-  --step: 1.45rem;
+  --step: 1.6rem;
   --margin-col: 13rem;
   --text-col: 44rem;
   --col-gap: 3.25rem;
@@ -256,8 +256,8 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   font-family: var(--sans);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 1.25rem;
+  color: var(--ink);
+  margin: 0 0 1.5rem;
   padding-bottom: 0.4rem;
   border-bottom: 3px solid var(--rule-strong);
 }
@@ -322,7 +322,7 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 }
 
 .work-meta {
-  margin: 0 0 1.5rem;
+  margin: 0 0 2.5rem;
   padding: 0.9rem 0 0;
   border-top: 3px solid var(--rule-strong);
 }
@@ -381,22 +381,22 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
     align-items: start;
   }
   /* The header dissolves so its parts can sit in the article grid. */
-  .work-head { display: contents; }
+  .page--work .work-head { display: contents; }
   .page--work article > *,
-  .work-head > * { grid-column: 2; }
+  .page--work .work-head > * { grid-column: 2; }
   /* Explicit rows for the header parts, so the margin column runs
      alongside the opening text instead of leaving a hole in it. */
-  .work-head > .work-kind { grid-column: 1 / -1; grid-row: 1; margin-bottom: 0.75rem; }
-  .work-head h1 { grid-column: 1 / -1; grid-row: 2; font-size: 4.75rem; margin-bottom: 1.5rem; }
-  .work-head > .work-lede { grid-column: 2; grid-row: 3; margin-bottom: 1.25rem; }
-  .work-head > .work-meta {
+  .page--work .work-head > .work-kind { grid-column: 1 / -1; grid-row: 1; margin-bottom: 0.75rem; }
+  .page--work .work-head h1 { grid-column: 1 / -1; grid-row: 2; font-size: 4.75rem; margin-bottom: 1.5rem; }
+  .page--work .work-head > .work-lede { grid-column: 2; grid-row: 3; margin-bottom: 1.25rem; }
+  .page--work .work-head > .work-meta {
     grid-column: 1;
     grid-row: 3;
     align-self: start;
     margin: 0.3rem 0 1.25rem;
   }
-  .work-head > .work-meta dd { margin: 0.1rem 0 0.55rem; font-size: 0.86rem; }
-  .work-head > .metrics { grid-column: 1; grid-row: 4; flex-direction: column; gap: 0.9rem; margin-bottom: 0; }
+  .page--work .work-head > .work-meta dd { margin: 0.1rem 0 0.55rem; font-size: 0.86rem; }
+  .page--work .work-head > .metrics { grid-column: 1; grid-row: 4; flex-direction: column; gap: 0.9rem; margin-bottom: 0; }
   .page--work article > blockquote { grid-column: 1 / -1; font-size: 2rem; max-width: 46rem; }
 }
 
@@ -407,13 +407,13 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .page--cv .work-head { margin-bottom: 2.5rem; }
 .page--cv .work-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.5rem 2rem; }
 .page--cv .work-meta dd { margin: 0.1rem 0 0; }
-.cv-section { margin-bottom: 2.75rem; }
+.cv-section { margin-bottom: 3.5rem; }
 .cv-entry {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.2rem var(--col-gap);
-  padding-bottom: 1.15rem;
-  margin-bottom: 1.15rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--rule);
   break-inside: avoid;
 }
@@ -524,10 +524,10 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 .intro-role {
   margin: 0;
   font-family: var(--sans);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--accent);
 }
 
@@ -561,6 +561,9 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 }
 .cv-download:hover { background: var(--ink); color: var(--paper); }
 .cv-download:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (min-width: 46em) {
+  .cv-download { transform: translateY(0.9rem); }
+}
 @media (max-width: 45.99em) {
   .cv-download { margin-left: 0; align-self: flex-start; }
 }
@@ -576,4 +579,4 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
 @media (min-width: 46em) {
   .hero .intro h1 { font-size: 3.6rem; }
 }
-.hero:first-child .intro-role { font-size: 0.74rem; color: var(--accent); }
+.hero:first-child .intro-role { font-size: 1rem; color: var(--accent); }

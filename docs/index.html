@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CV — Uliana Hrab</title>
 <meta name="description" content="Curriculum vitae of Uliana Hrab: applied mathematics, machine learning and software development.">
-<link rel="stylesheet" href="assets/css/cv.css?v=8">
+<link rel="stylesheet" href="assets/css/cv.css?v=12">
 </head>
 <body>
 <header class="site-header">
@@ -42,53 +42,11 @@
   </header>
 
   <section class="cv-section">
-    <h2>Selected work</h2>
-    <p class="note">Longer write-ups of each project are on the <a href="work.html">work page</a>.</p>
-
-    <div class="cv-entry">
-      <div class="cv-entry-head">
-        <h3><a href="work/ethereum-fraud-detection.html">Ethereum Fraud Detection</a></h3>
-      </div>
-      <p>Classified 9,841 Ethereum addresses as fraudulent or legitimate from 50
-      transaction-derived features. LightGBM reached F1 0.987 on held-out data. Before that,
-      I found and fixed a leak: a naive random split put 5.7% of test rows into the training
-      set through duplicate feature profiles. I made the split group-aware and selected models
-      by cross-validated PR-AUC instead of test score.
-      <br><span class="cv-stack">Python · scikit-learn · LightGBM · XGBoost · pytest</span></p>
-    </div>
-
-    <div class="cv-entry">
-      <div class="cv-entry-head">
-        <h3><a href="work/crossw.html">CrossW</a></h3>
-      </div>
-      <p>Designed and shipped a themed crossword site, from the product idea to a live
-      deployment. Four content packs and 32 puzzles live, 75 unit tests, roughly 5,400 lines of TypeScript.
-      Answers are compiled to opaque indices at build time, so they never reach the browser
-      in readable form.
-      <br><span class="cv-stack">Next.js 15 · React 19 · TypeScript · Vitest · Cloudflare Workers</span></p>
-    </div>
-
-    <div class="cv-entry">
-      <div class="cv-entry-head">
-        <h3><a href="work/voronoi-path-planner.html">Voronoi Path Planner</a></h3>
-      </div>
-      <p>Interactive path planner that optimises for clearance instead of distance. It builds a
-      clearance field against the obstacles and binary-searches the largest threshold that keeps
-      start and goal connected. Dijkstra then runs inside that corridor. Comes with a generated
-      figure set and a written report.
-      <br><span class="cv-stack">C++ · OpenGL · FreeGLUT · NumPy · SciPy</span></p>
-    </div>
-
-    <div class="cv-entry">
-      <div class="cv-entry-head">
-        <h3><a href="work/tictactoe.html">Networked Tic-Tac-Toe</a> and <a href="work/battleship.html">Battleship</a></h3>
-      </div>
-      <p>Two Qt desktop games in C++. The first is a client for a multiplayer game server:
-      invitation handshake, turn synchronisation and game-over detection, on top of a
-      third-party Boost.Asio transport from the course. In the second, the game rules are
-      entirely free of Qt and the widget only paints.
-      <br><span class="cv-stack">C++17/20 · Qt · CMake</span></p>
-    </div>
+    <h2>Projects</h2>
+    <p>Eight write-ups, each with the code and the figures, are on the
+    <a href="work.html">work page</a>: fraud detection on Ethereum addresses, a crossword site,
+    path planning for a robot, two Qt desktop games, computational geometry and numerical
+    methods.</p>
   </section>
 
   <section class="cv-section">
