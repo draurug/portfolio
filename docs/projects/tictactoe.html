@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Networked Tic-Tac-Toe — Uliana Hrab</title>
 <meta name="description" content="A Qt client for a networked tic-tac-toe: the invite handshake, role assignment and turn synchronisation over a text protocol.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=22">
+<link rel="stylesheet" href="../assets/css/cv.css?v=23">
 </head>
 <body>
 <header class="site-header">
@@ -69,6 +69,11 @@
 
     <h2>Turn synchronisation and game-over detection</h2>
     <p>There is no turn token. Each client holds a single <code>bool m_makingStep</code>: true on the accepting side at game start, cleared when the client sends a move, set when one arrives. Everything is relayed through one server over an ordered TCP stream, so the two flags stay complementary with no further coordination. Each client keeps its own replica of the board.</p>
+    <figure class="figure-wide">
+      <img src="../assets/img/tictactoe-two-clients.png" alt="Two client windows side by side, each listing the other player and showing the same board with one X and one O in the same cells; the left window carries the red Make Your Step label." width="1200" height="416">
+      <figcaption>Two clients mid-game. Each holds its own replica of the board and they agree on it; the red label marks whose turn it is.</figcaption>
+    </figure>
+
     <blockquote><p>The protocol reserves [GameEnded] and [GameIsOver]. The client library never sends them, and handles the latter with an empty branch. Nothing detected a win.</p></blockquote>
     <p>So the game had no ending. I resolved it locally instead of extending someone else's protocol. Both clients hold the full grid and apply the same moves, so both reach the same verdict with no round trip. On a win or draw the client reports the result, sends <code>[CloseGame]</code>, clears the board and returns to the player list. The replicated state is what makes that legitimate: the verdict is a pure function of a grid both sides already agree on.</p>
 

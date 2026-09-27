@@ -581,3 +581,9 @@ dd { margin: 0.15rem 0 0.8rem; font-size: 0.9rem; line-height: 1.4; }
   .hero .intro h1 { font-size: 3.6rem; }
 }
 .hero:first-child .intro-role { font-size: 1rem; color: var(--accent); }
+
+/* Interface screenshots need the margin column too: at 44rem the UI text
+   is unreadable. Plots stay in the text column. */
+@media (min-width: 62em) {
+  .page--work article > figure.figure-wide { grid-column: 1 / -1; }
+}

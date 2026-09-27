@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Battleship — Uliana Hrab</title>
 <meta name="description" content="A desktop Battleship game where the rules compile without Qt and the widgets only paint.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=22">
+<link rel="stylesheet" href="../assets/css/cv.css?v=23">
 </head>
 <body>
 <header class="site-header">
@@ -38,6 +38,11 @@
     <h2>Gameplay</h2>
     <p>Two ten-by-ten grids side by side. The player places a fleet of ten ships by hand, the computer places its own at random, and the two sides then alternate shots until one fleet is gone. It implements the Soviet variant of the rules. In practice that means a fleet of one four-cell ship, two threes, three twos and four singles, and ships that may not touch <em>even diagonally</em>.</p>
     <p>That adjacency rule is the fiddliest piece of game logic. <code>Board::hasAdjacentShip</code> walks all eight neighbours of every cell a proposed ship would occupy, and <code>canPlaceShip</code> refuses the placement if any of them is already occupied. A permissive error here produces a board that looks fine and plays wrong, so it belongs behind a testable interface.</p>
+
+    <figure class="figure-wide">
+      <img src="../assets/img/battleship-endgame.png" alt="The game at the end: the player's grid on the left shows the whole fleet with several ships crossed out, the opponent's grid on the right is covered in red crosses and miss markers, and the status line reads You win." width="945" height="742">
+      <figcaption>The end of a game. Every sunk ship sits clear of its neighbours, diagonals included, which is the placement rule the board enforces.</figcaption>
+    </figure>
 
     <h2>The separation</h2>
     <p>I started the project to build a Qt application where deleting the UI would leave the rules intact. Three classes carry the game.</p>
