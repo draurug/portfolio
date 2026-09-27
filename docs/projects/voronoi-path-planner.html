@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Widest-path planning on a clearance field — Uliana Hrab</title>
+<title>Voronoi Path Planner — Uliana Hrab</title>
 <meta name="description" content="An interactive C++/FreeGLUT planner that maximises the minimum distance to obstacles, then finds the shortest route inside that corridor.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=21">
+<link rel="stylesheet" href="../assets/css/cv.css?v=22">
 </head>
 <body>
 <header class="site-header">
@@ -36,7 +36,7 @@
     </header>
 
     <figure>
-      <img src="../assets/img/voronoi-demo.png" alt="Screenshot of the running program: a heat map of clearance, black rectangular obstacles, and a white route from a green start marker to a red goal marker.">
+      <img src="../assets/img/voronoi-demo.png" alt="Screenshot of the running program: a heat map of clearance, black rectangular obstacles, and a white route from a green start marker to a red goal marker." width="957" height="711">
       <figcaption>The program running. Heat map is the clearance field (red = close to an obstacle, blue = far), black outlines are the obstacles, the white polyline is the planned route. The number at the top is the minimum clearance along it.</figcaption>
     </figure>
 
@@ -67,14 +67,14 @@
     <p>That is 19,200 × ~28 ≈ 540,000 distance evaluations, fast enough that no spatial index is warranted at this size. The cost is <code>O(N·m)</code> for <code>N</code> cells and <code>m</code> segments, and it would become the bottleneck long before the search does if the obstacle count grew.</p>
 
     <figure>
-      <img src="../assets/img/voronoi-clearance.png" alt="Heat map of the clearance field over a scene of six rectangles, red near the obstacles grading through yellow to blue in the open areas.">
+      <img src="../assets/img/voronoi-clearance.png" alt="Heat map of the clearance field over a scene of six rectangles, red near the obstacles grading through yellow to blue in the open areas." width="1001" height="755">
       <figcaption>The clearance field for a fixed scene. The blue streaks running between obstacles are ridges: the locus of points that are locally as far from everything as they can be.</figcaption>
     </figure>
 
     <p>A point sits on a ridge when it is equidistant from its two nearest obstacles, which is the definition of an edge of the generalised Voronoi diagram of the segment set, the medial axis of the free space. The planner never constructs that diagram. It samples the field that implies it and lets the search find the ridges by itself. That removes degenerate-case handling and parabolic-arc arithmetic, at the cost of only as much accuracy as the grid provides.</p>
 
     <figure>
-      <img src="../assets/img/voronoi-medial-axis.png" alt="The same rectangular obstacles with red curves running midway between them, forming a connected network of corridors.">
+      <img src="../assets/img/voronoi-medial-axis.png" alt="The same rectangular obstacles with red curves running midway between them, forming a connected network of corridors." width="1001" height="813">
       <figcaption>The generalised Voronoi diagram of the same obstacle set, computed analytically for illustration. The planner does not build it. The ridges of the clearance field approximate it.</figcaption>
     </figure>
 
@@ -85,7 +85,7 @@
     <p>The answer is monotone in <code>T</code>. Raising the threshold only removes cells, so a component once split stays split. The predicate is true on <code>[0, T*]</code> and false above, and <code>T*</code>, the largest threshold keeping the endpoints connected, is exactly the best achievable bottleneck. A monotone predicate can be bisected.</p>
 
     <figure>
-      <img src="../assets/img/voronoi-binary-search.png" alt="Step plot of connectivity against clearance threshold: connected up to about 82 px, then a vertical drop to disconnected.">
+      <img src="../assets/img/voronoi-binary-search.png" alt="Step plot of connectivity against clearance threshold: connected up to about 82 px, then a vertical drop to disconnected." width="1308" height="746">
       <figcaption>Connectivity as a function of the threshold, for one scene. The single step is what makes bisection valid; the arrows mark where successive midpoints land.</figcaption>
     </figure>
 
@@ -100,7 +100,7 @@
     <p>It is called with <code>T* − 0.01</code>, not <code>T*</code>. Bisection converges from below, and the corridor at exactly <code>T*</code> can be one cell wide and sensitive to the last float ulp. The relaxation guarantees the search sees the corridor BFS just certified as connected.</p>
 
     <figure>
-      <img src="../assets/img/voronoi-dijkstra.png" alt="A grid with some blocked cells, a path from a green start to a red goal, and eight arrows leaving one cell.">
+      <img src="../assets/img/voronoi-dijkstra.png" alt="A grid with some blocked cells, a path from a green start to a red goal, and eight arrows leaving one cell." width="946" height="724">
       <figcaption>The search inside the corridor: eight neighbours per cell, weight 1 orthogonally and √2 diagonally. Blocked cells are those below the clearance threshold.</figcaption>
     </figure>
 

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Numerical methods in Octave — Uliana Hrab</title>
+<title>Numerical Methods — Uliana Hrab</title>
 <meta name="description" content="Eight Octave labs on interpolation, approximation, quadrature and ODE integration, and what the n = 50 Vandermonde solve actually shows.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=21">
+<link rel="stylesheet" href="../assets/css/cv.css?v=22">
 </head>
 <body>
 <header class="site-header">
@@ -62,12 +62,12 @@
     <p>Chebyshev nodes control the <code>ω(x) = ∏(x − x_i)</code> factor in the interpolation error term, which is a statement about the mathematical polynomial. They say nothing about the conditioning of the linear system solved to find that polynomial's coefficients in the basis 1, x, x², …, and that conditioning grows exponentially with degree regardless of node placement. Fixing it means changing basis, to barycentric Lagrange or an orthogonal-polynomial representation, rather than moving the nodes. Octave itself flags the n = 10 and n = 50 solves as rank-deficient.</p>
 
     <figure>
-      <img src="../assets/img/nm-uniform-n50.png" alt="Degree-50 interpolant on a uniform grid: it tracks the function exactly until x is about 3.7, then breaks into rapid oscillation between roughly -1.6 and 1.5.">
+      <img src="../assets/img/nm-uniform-n50.png" alt="Degree-50 interpolant on a uniform grid: it tracks the function exactly until x is about 3.7, then breaks into rapid oscillation between roughly -1.6 and 1.5." width="900" height="675">
       <figcaption>Uniform nodes, n = 50. The fit is exact to the eye for most of the interval, then disintegrates near the right end.</figcaption>
     </figure>
 
     <figure>
-      <img src="../assets/img/nm-chebyshev-n50.png" alt="Degree-50 interpolant on Chebyshev nodes: the same breakdown near the right end, but oscillating between roughly -5 and 13 on a much wider vertical scale.">
+      <img src="../assets/img/nm-chebyshev-n50.png" alt="Degree-50 interpolant on Chebyshev nodes: the same breakdown near the right end, but oscillating between roughly -5 and 13 on a much wider vertical scale." width="900" height="675">
       <figcaption>Chebyshev nodes, n = 50, with the y-axis running to 15. Same basis, better node placement, larger error.</figcaption>
     </figure>
 
@@ -93,7 +93,7 @@
     <p>Nothing here diverges. Refining the grid improves every method monotonically, which is the whole argument for splines over one high-degree polynomial. The Hermite spline wins throughout by about an order of magnitude, as it should, since it is given twice as much information: the value and the slope at every node. At n = 3 and 5 the cubic spline is marginally worse than the linear one, because with so few knots the natural end conditions impose zero curvature at ±π, where this function has none, and that costs more than the higher degree gains. By n = 10 the ordering is the expected one.</p>
 
     <figure>
-      <img src="../assets/img/nm-splines-n10.png" alt="Three splines through eleven nodes on a double-humped curve: the linear spline cuts the peaks flat, the cubic undershoots them slightly, the Hermite spline nearly coincides with the function.">
+      <img src="../assets/img/nm-splines-n10.png" alt="Three splines through eleven nodes on a double-humped curve: the linear spline cuts the peaks flat, the cubic undershoots them slightly, the Hermite spline nearly coincides with the function." width="900" height="675">
       <figcaption>Ten intervals. The linear spline chords straight across each hump; the Hermite spline is almost indistinguishable from <code>f</code>.</figcaption>
     </figure>
 
@@ -104,7 +104,7 @@
     <p>Lab 4 is ordinary least squares over eight sample points on [0, π/2], with polynomials of degree 2, 3 and 6 and with the nonlinear model <code>φ(x) = a₀·exp(a₁x)</code>. The nonlinear fit is handled by linearization: take logs, so <code>ln y = ln a₀ + a₁x</code> becomes a two-column linear system. That is the cheap standard trick and also a compromise, since it minimizes squared residuals in log space rather than in <code>y</code>. The fit is visibly imperfect for a second and larger reason. An exponential is monotone and convex, while the target function is S-shaped with an inflection, so no <code>a₀</code>, <code>a₁</code> can follow it.</p>
 
     <figure>
-      <img src="../assets/img/nm-nonlinear-lsq.png" alt="Eight data points on an S-shaped curve with an exponential fit drawn through them; the exponential runs above the curve on the left third and below it on the right third.">
+      <img src="../assets/img/nm-nonlinear-lsq.png" alt="Eight data points on an S-shaped curve with an exponential fit drawn through them; the exponential runs above the curve on the left third and below it on the right third." width="900" height="675">
       <figcaption>The exponential model crosses the data twice and misses in between. The model class is wrong, not the fitting procedure.</figcaption>
     </figure>
 

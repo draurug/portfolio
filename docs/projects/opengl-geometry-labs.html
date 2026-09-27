@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpenGL graphics labs — Uliana Hrab</title>
+<title>Computational Geometry in OpenGL — Uliana Hrab</title>
 <meta name="description" content="Seven C++/OpenGL lab programs covering transforms, animation, segment intersection, Bresenham and Wu rasterization, Graham scan and ear clipping.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=21">
+<link rel="stylesheet" href="../assets/css/cv.css?v=22">
 </head>
 <body>
 <header class="site-header">
@@ -40,12 +40,12 @@
     <p><strong>Lab 3</strong> is three variants of one animation, written as three separate programs. The figure is the parametric heart <code>x = 16sin³t</code>, <code>y = 13cos t − 5cos 2t − 2cos 3t − cos 4t</code>, sampled at one-degree steps into a <code>GL_TRIANGLE_FAN</code>. In 3.1 the figure travels an ellipse. In 3.2 it spins in place. In 3.3 it does both, with space to pause and <code>c</code> to cycle colors. A 16 ms <code>glutTimerFunc</code> drives the phase, which ties animation speed to the timer rather than to frame rate.</p>
 
     <figure>
-      <img src="../assets/img/opengl-lab3.png" alt="A raspberry-coloured heart shape drawn on a pale background, tilted mid-rotation.">
+      <img src="../assets/img/opengl-lab3.png" alt="A raspberry-coloured heart shape drawn on a pale background, tilted mid-rotation." width="669" height="597">
       <figcaption>Lab 3.3, caught mid-orbit. The outline is 360 samples of the parametric heart, filled as a triangle fan.</figcaption>
     </figure>
 
     <figure>
-      <img src="../assets/img/opengl-lab1.png" alt="A Gouraud-shaded triangle: yellow at the top vertex, cyan at the lower left, magenta at the lower right, on a dark slate background.">
+      <img src="../assets/img/opengl-lab1.png" alt="A Gouraud-shaded triangle: yellow at the top vertex, cyan at the lower left, magenta at the lower right, on a dark slate background." width="716" height="711">
       <figcaption>Lab 1. Three vertex colors, interpolated across the face by the fixed pipeline.</figcaption>
     </figure>
 
@@ -81,7 +81,7 @@
     <p>Wu costs twice the pixel writes, floating-point instead of integer arithmetic, and a blend-enabled framebuffer (<code>GL_SRC_ALPHA</code>, <code>GL_ONE_MINUS_SRC_ALPHA</code>). Its correctness also depends on what is already under the line, because partial pixels composite with the background. Both algorithms are O(max(dx, dy)). The difference is in the constant factor.</p>
 
     <figure>
-      <img src="../assets/img/opengl-lab4.png" alt="Four panels: two crossing segments drawn green and two parallel segments drawn red, each pair rendered once with Bresenham on the left and once with Wu on the right.">
+      <img src="../assets/img/opengl-lab4.png" alt="Four panels: two crossing segments drawn green and two parallel segments drawn red, each pair rendered once with Bresenham on the left and once with Wu on the right." width="896" height="755">
       <figcaption>Lab 4. Left half Bresenham, right half Wu; green means the orientation test reported an intersection. The Wu lines are visibly softer along their edges.</figcaption>
     </figure>
 
@@ -112,7 +112,7 @@
     <p>The code also carries a <code>guard</code> counter and an <code>if (!found) break;</code>. Neither should fire on a simple polygon. They exist because the random generator could in principle produce a self-intersecting one, and a lab that hangs inside <code>glutMainLoop</code> is harder to debug than one that draws an incomplete triangulation.</p>
 
     <figure>
-      <img src="../assets/img/opengl-lab5.png" alt="Two panels side by side: on the left scattered black points with an indigo convex hull polygon around them, on the right a black star-shaped polygon filled with teal triangles.">
+      <img src="../assets/img/opengl-lab5.png" alt="Two panels side by side: on the left scattered black points with an indigo convex hull polygon around them, on the right a black star-shaped polygon filled with teal triangles." width="1119" height="607">
       <figcaption>Lab 5. Hull on the left, triangulation on the right, both regenerated on R.</figcaption>
     </figure>
 

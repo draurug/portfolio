@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ethereum Fraud Detection — Uliana Hrab</title>
 <meta name="description" content="Binary classification of Ethereum addresses from 50 transaction-derived features, and the duplicate-row leak that a naive random split would have hidden.">
-<link rel="stylesheet" href="../assets/css/cv.css?v=21">
+<link rel="stylesheet" href="../assets/css/cv.css?v=22">
 </head>
 <body>
 <header class="site-header">
@@ -43,7 +43,7 @@
     <p>The dataset is the public Kaggle set built from real network addresses: 9,841 accounts, 50 numeric features each, one binary target <code>FLAG</code>. About 22% of the addresses are labelled fraud. That is imbalanced, well short of the 1-in-10,000 imbalance of card-fraud problems. At this ratio accuracy is useless and PR-AUC is still well-behaved.</p>
 
     <figure>
-      <img src="../assets/img/fraud-class_balance.png" alt="Bar chart of class counts: about 7,662 legitimate addresses against about 2,179 fraudulent ones.">
+      <img src="../assets/img/fraud-class_balance.png" alt="Bar chart of class counts: about 7,662 legitimate addresses against about 2,179 fraudulent ones." width="600" height="480">
       <figcaption>78/22 split between legitimate and fraudulent addresses. Always guessing "legitimate" scores 78% accuracy, so accuracy does not appear in the results below.</figcaption>
     </figure>
 
@@ -58,14 +58,14 @@
     <p><strong>Duplicate columns.</strong> 21 pairs of columns are bit-for-bit identical in the source CSV, mostly in the <code>erc20_avg_time_between_*</code> and <code>erc20_*_val_sent_contract</code> families, all of them all-zero across every row. The duplication is between features, not between a feature and the target, which makes it an upstream data-quality problem rather than leakage. I kept the columns. Trees are indifferent to redundant inputs, and the only cost is feature importance spread across the copies. For production I would drop them; the cleanup sits commented-out in notebook 02.</p>
 
     <figure>
-      <img src="../assets/img/fraud-correlation_heatmap.png" alt="Correlation heat map over all features, showing blocks of strongly correlated columns along the diagonal.">
+      <img src="../assets/img/fraud-correlation_heatmap.png" alt="Correlation heat map over all features, showing blocks of strongly correlated columns along the diagonal." width="1680" height="1440">
       <figcaption>Feature correlations. The bright blocks are the families that move together: transaction counters with each other, ERC20 statistics with each other. Nothing correlates with the target above 0.95, so no single feature gives the answer away.</figcaption>
     </figure>
 
     <p><strong>The classes separate on individual features.</strong> Ranking features by |median(fraud) − median(legit)| / std puts the time span between first and last transaction on top, followed by the transaction counters, <code>sent_tnx</code>, <code>received_tnx</code>, <code>unique_sent_to_addresses</code> and <code>total_ether_received</code>. A fraudulent address has a median lifetime of 5 days against 81 for a legitimate one, makes 5 transactions against 11, deals with 1 unique recipient against 2, and receives 1.68 ether against 71.72. Short-lived, low-volume, narrow counterparty set.</p>
 
     <figure>
-      <img src="../assets/img/fraud-fraud_vs_normal_transaction_counts.png" alt="Box plots comparing transaction-count features between fraudulent and legitimate addresses; fraudulent distributions sit visibly lower.">
+      <img src="../assets/img/fraud-fraud_vs_normal_transaction_counts.png" alt="Box plots comparing transaction-count features between fraudulent and legitimate addresses; fraudulent distributions sit visibly lower." width="1658" height="856">
       <figcaption>Transaction counts by class. The separation is visible before any model is fitted, which is useful to know before the model starts reporting 0.99.</figcaption>
     </figure>
 
@@ -132,19 +132,19 @@
     </div>
 
     <figure>
-      <img src="../assets/img/fraud-pr_curves.png" alt="Precision-recall curves for the four models; the three tree models hug the top-right corner while logistic regression falls away.">
+      <img src="../assets/img/fraud-pr_curves.png" alt="Precision-recall curves for the four models; the three tree models hug the top-right corner while logistic regression falls away." width="840" height="720">
       <figcaption>Precision–recall curves. The three tree curves are indistinguishable in the corner; logistic regression sits visibly below them. PR-AUC is the headline metric here because its random baseline is the positive-class share (0.22), while ROC-AUC's is always 0.5. With 78% negatives, ROC-AUC flatters everything.</figcaption>
     </figure>
 
     <p>Logistic regression fails in a specific way. It catches 94% of fraud and is wrong 28% of the time it raises a flag. <code>class_weight='balanced'</code> pushes it hard toward positives, and a linear boundary cannot express what the trees find. The gap between 0.947 and 0.999 PR-AUC is the size of the non-linear structure in this data.</p>
 
     <figure>
-      <img src="../assets/img/fraud-confusion_matrix_lightgbm.png" alt="Confusion matrix for LightGBM on the test set, with a small number of false negatives and false positives.">
+      <img src="../assets/img/fraud-confusion_matrix_lightgbm.png" alt="Confusion matrix for LightGBM on the test set, with a small number of false negatives and false positives." width="540" height="480">
       <figcaption>LightGBM on the test set. Recall 0.989 means roughly 5 missed fraud addresses out of about 435. In a real monitoring pipeline that miss count, not the F1, is the number people watch.</figcaption>
     </figure>
 
     <figure>
-      <img src="../assets/img/fraud-feature_importance.png" alt="Horizontal bar chart of the twenty most important LightGBM features, led by the activity time span and transaction counters.">
+      <img src="../assets/img/fraud-feature_importance.png" alt="Horizontal bar chart of the twenty most important LightGBM features, led by the activity time span and transaction counters." width="960" height="720">
       <figcaption>Top-20 features of the selected model. They match the ones the EDA flagged: activity time span, transaction counters, unique-counterparty counts. Agreement between a pre-model ranking and a post-model one is weak evidence, but it is cheap to have.</figcaption>
     </figure>
 
